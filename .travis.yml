@@ -20,7 +20,7 @@ before_install:
 - chmod 600 fbtrb_deploy
 - export LANG=en_US.UTF-8
 
-- $CMND -r -o StrictHostKeyChecking=no -i fbtrb_deploy $CLOUD_CODE_SRC root@162.243.118.87:/root/restaurant_app/cloud
+- scp -r -o StrictHostKeyChecking=no -i fbtrb_deploy main.js root@162.243.118.87:/root/restaurant_app/cloud
 - ssh -o StrictHostKeyChecking=no -i fbtrb_deploy root@162.243.118.87 ' pm2 restart 1; exit;'
 
 - nvm install $NODE_VERSION
@@ -50,7 +50,7 @@ script:
 - ionic platform add browser
 - ionic build browser
 # - rm platforms/browser/platform_www/cordova.js
-- $CMND -r -o StrictHostKeyChecking=no -i fbtrb_deploy $SRC root@162.243.118.87:/var/www/restaurant.tanzeelrana.me/ >/dev/null
+- scp -r -o StrictHostKeyChecking=no -i fbtrb_deploy platforms/browser/* root@162.243.118.87:/var/www/restaurant.tanzeelrana.me/ >/dev/null
 
 after_script:
 - rm -rf *
