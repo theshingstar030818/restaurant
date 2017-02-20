@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      {{title}}
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <span color="primary" showWhen="ios">Cancel</span>
+        <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+      <ion-item>
+        <ion-label fixed>Name</ion-label>
+        <ion-input [(ngModel)]="name" type="text" placeholder="Enter name" value=""></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label fixed>Price {{configService.currency.sign}}</ion-label>
+        <ion-input [(ngModel)]="price" type="number" placeholder="Enter price" value=""></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating>Description</ion-label>
+        <ion-textarea [(ngModel)]="description" ></ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        Thumb Image
+        <button ion-button outline item-right icon-left>
+          <input (change)="thumbFileChangeEvent($event)" type="file" />
+        </button>
+      </ion-item>
+
+      <ion-item>
+        Images
+        <button ion-button outline item-right icon-left>
+          <input (change)="imagesFileChangeEvent($event)" type="file" multiple="true" />
+        </button>
+      </ion-item>
+
+      <!-- OPTIONS -->
+      <ion-item-divider>
+        <ion-label>Options</ion-label>
+        <button (click)="addNewOption()" ion-button color="light" round item-right icon-left>New Option</button>
+      </ion-item-divider>
+      <ion-item *ngFor="let option of itemService?.options">
+        <ion-label>{{ option.get('name') }}</ion-label>
+        <ion-checkbox [(ngModel)]="optionsModels[option.get('name')]" color="primary"></ion-checkbox>
+      </ion-item>
+
+      <ion-item-divider>
+        <ion-label>Extras</ion-label>
+        <button (click)="addNewExtra()" ion-button color="light" round item-right icon-left>New Extra</button>
+      </ion-item-divider>
+      <ion-item *ngFor="let extra of itemService?.extras">
+        <ion-label>{{ extra.get('name') }} {{configService.currency.sign}}</ion-label>
+        <ion-input [(ngModel)]="extrasModels[extra.get('name')]" type="number" placeholder="Enter cost"></ion-input>
+      </ion-item>
+
+      <ion-item-divider>
+        <ion-label>Sizes</ion-label>
+        <button (click)="addNewSize()" ion-button color="light" round item-right icon-left>New Size</button>
+      </ion-item-divider>
+      <ion-item *ngFor="let size of itemService?.sizes">
+        <ion-label>{{ size.get('name') }} {{configService.currency.sign}}</ion-label>
+        <ion-input [(ngModel)]="sizesModels[size.get('name')]" type="number" placeholder="Enter cost"></ion-input>
+      </ion-item>
+  </ion-list>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <!-- <p>Ash, Misty, Brock</p> -->
+    <ion-buttons end>
+      <button (click)="createItem()" ion-button block>Save</button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

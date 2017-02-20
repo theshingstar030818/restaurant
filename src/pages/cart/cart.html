@@ -1,0 +1,70 @@
+<!--
+  Generated template for the ProfilePage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Cart</ion-title>
+    <ion-buttons end>
+      <button ion-button>
+        <ion-icon name="md-more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding class="cart gray-bg">
+  <ion-list class="list-no-border">
+
+    <ion-item-sliding class="card" *ngFor="let item of cart.items; let i = index" margin-top>
+      <ion-item>
+        <ion-thumbnail item-left>
+          <img src="{{ item.orignalItem.thumb.url }}" alt=""/>
+        </ion-thumbnail>
+        <h2>{{ item.orignalItem.name }}</h2>
+        <div>
+          <p class="price pull-left">
+            <span color="primary">${{ item.finalPrice }}</span>
+            <span> x {{ item.quantity }}</span><br>
+            <!-- <span>Size : {{item.addOns.size.name}}</span><br>
+            <span *ngFor="let option of item.addOns.options">{{option.name}}</span>
+            <span *ngFor="let extra of item.addOns.extras">{{extra.name}}</span> -->
+          </p>
+          <button ion-button color="primary" class="button-qty pull-right" (click)="plusQty(i)">
+            <ion-icon name="add"></ion-icon>
+          </button>
+          <button ion-button color="primary" class="button-qty pull-right" (click)="minusQty(i)">
+            <ion-icon name="remove"></ion-icon>
+          </button>
+        </div>
+      </ion-item>
+      <ion-item-options>
+        <button ion-button (click)="remove(i)">
+          <ion-icon name="trash"></ion-icon>
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+
+  </ion-list>
+</ion-content>
+
+<!--Footer button-->
+<ion-footer class="cart-footer" [hidden]="!cart?.showFooter">
+  <ion-title>
+    <span color="dark">Total</span>
+    <br/>
+    <span class="bold" color="danger">${{ cart.total }}</span>
+  </ion-title>
+  <ion-buttons end>
+    <button ion-button (click)="buy()" color="danger">
+      CHECK OUT
+    </button>
+  </ion-buttons>
+</ion-footer>

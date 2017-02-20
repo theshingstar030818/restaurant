@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Add Menu Category
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <span color="primary" showWhen="ios">Cancel</span>
+        <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+      <!-- <ion-item>
+        <ion-avatar item-left>
+          <img src="{{character.image}}">
+        </ion-avatar>
+        <h2>{{character.name}}</h2>
+        <p>{{character.quote}}</p>
+      </ion-item> -->
+
+      <ion-item>
+        <ion-label fixed>Name</ion-label>
+        <ion-input [(ngModel)]="name" type="text" value=""></ion-input>
+      </ion-item>
+      
+      <ion-item>
+        Upload Image
+        <button ion-button outline item-right icon-left>
+          <input (change)="fileChangeEvent($event)" type="file"/>
+        </button>
+      </ion-item>
+
+      <ion-item>
+        <button (click)="createCategory()" ion-button block>Save</button>
+      </ion-item>
+  </ion-list>
+</ion-content>

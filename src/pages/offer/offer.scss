@@ -1,0 +1,56 @@
+page-offer,
+.offer {
+
+  ion-slides {
+    height: auto;
+
+    .swiper-container {
+      padding-bottom: 20px;
+
+      .card {
+        margin: 1em;
+
+        .full-image {
+          width: 100%;
+          height: auto;
+        }
+      }
+
+      .swiper-pagination {
+        bottom: 0;
+
+        .swiper-pagination-bullet-active {
+          background: color($colors, primary);
+        }
+      }
+
+      .offer-label {
+        position: absolute;
+        top: 0;
+        right: 10px;
+
+        .square {
+          display: block;
+          width: 40px;
+          line-height: 36px;
+          font-size: 1em;
+          background: color($colors, primary);;
+        }
+
+        i.triangle {
+          display: block;
+          width: 0;
+          height: 0;
+          border-left: 20px solid transparent;
+          border-right: 20px solid transparent;
+          border-top: 20px solid color($colors, primary);
+        }
+      }
+    }
+  }
+}
+
+.offer-footer {
+  border-top: 1px solid color($colors, border-color);
+
+}

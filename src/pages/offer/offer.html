@@ -1,0 +1,69 @@
+<!--
+  Generated template for the ProfilePage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Offer</ion-title>
+    <ion-buttons end>
+      <button ion-button>
+        <ion-icon name="md-more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content class=" gray-bg">
+  <ion-slides pager>
+    <ion-slide *ngFor="let item of items">
+      <div class="card rlt light-bg" (click)="viewItem(item.id)">
+        <img class="full-image" src="{{ item.thumb }}" alt=""/>
+
+        <div class="card-bottom" padding>
+            <span class="pull-left">
+              {{ item.name }}
+            </span>
+
+          <span class="pull-right price" color="primary">
+              ${{ item.price }}
+            </span>
+
+          <div class="clear"></div>
+        </div>
+
+        <div class="offer-label">
+          <span class="square" text-center color="light">{{ item.offer }}%</span>
+          <i class="triangle"></i>
+        </div>
+      </div>
+
+    </ion-slide>
+  </ion-slides>
+</ion-content>
+
+<!--Footer button-->
+<ion-footer class="offer-footer">
+  <ion-grid no-padding>
+    <ion-row class="item-button-group" no-padding>
+      <ion-col no-padding>
+        <button ion-button block color="gray">
+          <ion-icon class="text-2x" name="ios-star"></ion-icon>
+          <span class="text-sm">ADD TO FAVORITE</span>
+        </button>
+      </ion-col>
+      <ion-col no-padding>
+        <button ion-button block (click)="addCart()">
+          <ion-icon class="text-2x" name="ios-cart-outline"></ion-icon>
+          <span class="text-sm">ADD TO CART</span>
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

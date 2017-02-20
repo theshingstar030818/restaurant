@@ -1,0 +1,39 @@
+page-item,
+.item {
+  ion-slides {
+    height: auto;
+  }
+
+  .cover {
+    position: relative;
+
+    img {
+      display: block;
+    }
+
+    .slider-pager {
+      bottom: 45px;
+
+      .slider-pager-page.active {
+        color: color($colors, light);
+      }
+    }
+
+    .overlay {
+      bottom: 0;
+      padding: 10px;
+      position: absolute;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1;
+
+      .pull-left {
+        line-height: 1.2em;
+      }
+
+      .price {
+        font-size: 1.2em;
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+page-cart,
+.cart {
+
+  .card {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+
+    .item-inner {
+      border: none;
+
+      .input-wrapper {
+        border: none;
+      }
+    }
+  }
+
+  .price {
+    line-height: 3em;
+  }
+
+  .button-qty {
+    vertical-align: bottom;
+    min-height: 10px;
+    min-width: 20px;
+    line-height: 36px;
+    font-size: 1em;
+    padding: 1.2em 0.8em;
+  }
+}
+
+.cart-footer {
+  background: #FBFBFB;
+  border-top: 1px solid color($colors, border-color);
+
+  ion-title {
+    position: absolute;
+    padding-left: 16px;
+    left: 0;
+    font-weight: normal;
+
+    .toolbar-title {
+      text-align: left;
+      padding-left: 0;
+    }
+  }
+}

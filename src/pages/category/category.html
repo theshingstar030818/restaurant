@@ -1,0 +1,104 @@
+<!--
+  Generated template for the ProfilePage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{ category?.menu.get("name") }}</ion-title>
+    <ion-buttons end>
+      <button ion-button>
+        <ion-icon name="md-more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content class="card-background-page">
+  
+  <div *ngFor="let item of category?.items; let i = index">
+    <ion-row *ngIf="i%2==0">
+      
+      <!-- <ion-col *ngIf="category.items[i]" >
+        <ion-card (click)="viewItem(category.items[i].id)">
+          <img src="{{ category.items[i].get('thumb').url() }}" alt="{{ category.items[i].get('name') }}"/>
+          <div class="card-title" color="primary"><span class="card-title-text">{{ category.items[i].get('name') }}</span></div>
+          <div class="card-subtitle"><span class="card-title-text">${{ category.items[i].get("price") }}</span></div>
+        </ion-card>
+        
+      </ion-col>
+
+      <ion-col *ngIf="category.items[i+1]" >
+        <ion-card (click)="viewItem(category.items[i+1].id)">
+          <img src="{{ category.items[i+1].get('thumb').url() }}" alt="{{ category.items[i+1].get('name') }}"/>
+          <div class="card-title" color="primary"><span class="card-title-text">{{ category.items[i+1].get('name') }}</span></div>
+          <div class="card-subtitle"><span class="card-title-text">${{ category.items[i+1].get("price") }}</span></div>
+        </ion-card>
+      </ion-col> -->
+
+
+      <ion-col *ngIf="category.items[i]" ><div>
+        <div class="list-items">
+          <div class="item-menu">
+
+              <img (click)="viewItem(category.items[i].id)" src="{{ category.items[i].get('thumb').url() }}" alt="{{ category.items[i].get('name') }}"/>
+
+              <div class="overlay">
+                <span class="pull-left" color="light">
+                  {{ category.items[i].get('name') }} - ${{ category.items[i].get("price") }}
+                </span>
+              </div>
+
+              <div [hidden]="!user.isAdmin" class="edit-button" (click)="editItem(i)">
+                <button ion-button color="light" round>
+                  <ion-icon name="md-create"></ion-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+
+      <ion-col *ngIf="category.items[i+1]" ><div>
+        <div class="list-items">
+          <div class="item-menu">
+
+              <img (click)="viewItem(category.items[i+1].id)" src="{{ category.items[i+1].get('thumb').url() }}" alt="{{ category.items[i+1].get('name') }}"/>
+
+              <div class="overlay">
+                <span class="pull-left" color="light">
+                  {{ category.items[i+1].get('name') }} - ${{ category.items[i+1].get("price") }}
+                </span>
+              </div>
+              <div [hidden]="!user.isAdmin" class="edit-button" (click)="editItem(i+1)">
+                <button ion-button color="light" round>
+                  <ion-icon name="md-create"></ion-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+
+    </ion-row>
+  </div>
+
+</ion-content>
+
+<ion-footer [hidden]="!user.isAdmin">
+  <ion-toolbar>
+    <!-- <p>Ash, Misty, Brock</p> -->
+    <ion-buttons end>
+      <button (click)="openModal({category: 0})" ion-button icon-right color="royal">
+        Add
+        <ion-icon name="md-add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

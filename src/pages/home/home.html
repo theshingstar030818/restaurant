@@ -1,0 +1,107 @@
+<!--
+  Generated template for the ProfilePage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Menu</ion-title>
+    <ion-buttons end>
+      <button ion-button>
+        <ion-icon name="md-more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content class="card-background-page">
+
+
+
+  <!--slider-->
+  <ion-slides auto-play="2000" pager>
+    <ion-slide *ngFor="let img of slides">
+      <img class="full-image" src="{{ img }}" alt=""/>
+    </ion-slide>
+  </ion-slides>
+
+  <!--list of categories-->
+  <h3 text-center>El Gaucho restaurant</h3>
+
+  <div *ngFor="let category of menuService?.menu; let i = index">
+    <ion-row *ngIf="i%2==0">
+      
+      <!-- <ion-col *ngIf="menuService.menu[i]" >
+        <ion-card (click)="viewCategory(menuService.menu[i].id)">
+          <img src="{{configService.companyFiles}}/{{ menuService.menu[i].get('image').name() }}"/>
+          <div class="card-title" color="primary">{{ menuService.menu[i].get('name') }}</div>
+          <div class="card-subtitle"></div>
+        </ion-card>
+        
+      </ion-col>
+
+      <ion-col *ngIf="menuService.menu[i+1]" >
+        <ion-card (click)="viewCategory(menuService.menu[i+1].id)">
+          <img src="{{configService.companyFiles}}/{{ menuService.menu[i+1].get('image').name() }}"/>
+          <div class="card-title" color="primary">{{ menuService.menu[i+1].get('name') }}</div>
+          <div class="card-subtitle"></div>
+        </ion-card>
+      </ion-col> -->
+
+
+      <ion-col *ngIf="menuService.menu[i]" ><div>
+        <div class="list-items">
+          <div class="item-menu" (click)="viewCategory(menuService.menu[i].id)">
+
+              <img src="{{configService.companyFiles}}/{{ menuService.menu[i].get('image').name() }}" alt="{{ menuService.menu[i].get('name') }}"/>
+
+              <div class="overlay">
+
+                <span class="pull-left" color="light">
+                  {{ menuService.menu[i].get('name') }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+
+      <ion-col *ngIf="menuService.menu[i+1]"><div>
+        <div class="list-items">
+          <div class="item-menu" (click)="viewCategory(menuService.menu[i+1].id)">
+
+            <img src="{{configService.companyFiles}}/{{ menuService.menu[i+1].get('image').name() }}" alt="{{ menuService.menu[i+1].get('name') }}"/>
+
+            <div class="overlay">
+
+              <span class="pull-left" color="light">
+                {{ menuService.menu[i+1].get('name') }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div></ion-col>
+
+    </ion-row>
+  </div>
+
+
+</ion-content>
+
+<ion-footer [hidden]="!userService?.isAdmin()">
+  <ion-toolbar>
+    <!-- <p>Ash, Misty, Brock</p> -->
+    <ion-buttons end>
+      <button (click)="openModal()" ion-button icon-right color="royal">
+        Add
+        <ion-icon name="md-add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

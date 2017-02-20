@@ -1,0 +1,38 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Employees</ion-title>
+    <ion-buttons end>
+      <button ion-button>
+        <ion-icon name="md-more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-list class="list-full-border">
+    <ion-item *ngFor="let employee of employees">
+      <h3>Name : {{ employee.get('name') }}</h3>
+      <p>Phone : {{ employee.get('phone') }} - Email : {{ employee.get('email') }}</p>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
+
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons end>
+      <button (click)="addEmployee()" ion-button icon-right color="secondary">
+        ADD EMPLOYEE
+        <ion-icon name="ios-add-circle-outline"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

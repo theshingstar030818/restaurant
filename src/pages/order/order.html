@@ -1,0 +1,192 @@
+<!--
+  Generated template for the ProfilePage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Order Details</ion-title>
+    <ion-buttons end>
+      <button ion-button>
+        <ion-icon name="md-more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+
+  <!-- <ion-card *ngFor="let item of order?.items">
+    <ion-card-header>
+      
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-thumbnail item-left>
+          <img src="{{item.orignalItem.thumb.url}}">
+        </ion-thumbnail>
+        <h2>{{item?.orignalItem?.name}}</h2>
+        
+        <button ion-button clear item-right>View</button>
+        <ion-note item-right>
+        {{configService.currency.sign}}{{item?.finalPrice}}
+        </ion-note>
+      </ion-item>
+      {{item.orignalItem?.description}}<br>
+      <p> QTY: {{item?.quantity}} {{item?.addOns?.size?.name}}</p>
+      <span [hidden]="!item.addOns?.options.length>0"> <span color="dark-gray">Options:</span> <span *ngFor="let option of item.addOns?.options"> {{option?.name}} </span><br></span>
+
+      <span [hidden]="!item.addOns?.extras.length>0"> <span color="dark-gray">Extras:</span> <span *ngFor="let extra of item.addOns?.extras"> {{extra?.name}} </span><br></span>
+
+    </ion-card-content>
+  </ion-card> -->
+
+  <ion-item *ngFor="let item of order?.items">
+    <ion-thumbnail item-left>
+      <img src="{{item.orignalItem.thumb.url}}">
+    </ion-thumbnail>
+    <h2>{{item?.orignalItem?.name}}</h2>
+    <p>{{item.orignalItem?.description}}</p>
+    <p> QTY: {{item?.quantity}} {{item?.addOns?.size?.name}}</p>
+    <span [hidden]="!item.addOns?.options.length>0"> <span color="dark-gray">Options:</span> <span *ngFor="let option of item.addOns?.options"> {{option?.name}} </span><br></span>
+
+    <span [hidden]="!item.addOns?.extras.length>0"> <span color="dark-gray">Extras:</span> <span *ngFor="let extra of item.addOns?.extras"> {{extra?.name}} </span><br></span>
+    <!-- <button ion-button clear item-right>View</button> -->
+    <ion-note item-right>
+    {{configService.currency.sign}}{{item?.finalPrice}}
+    </ion-note>
+  </ion-item>
+
+  <ion-item>
+    <h3>Special Instructions</h3>
+    <p>{{order?.specialInstructions}}</p>
+  </ion-item>
+
+  <ion-item>
+    <ion-icon name="ios-clipboard-outline" item-left></ion-icon>
+    Status
+    <ion-badge item-right>{{order?.status}}</ion-badge>
+  </ion-item>
+
+  <div *ngIf="showCallDriver">
+    <ion-item [hidden]="!showCallDriver">
+      <button (click)="callDriver()" ion-button outline item-right icon-left>
+        <ion-icon name="ios-call-outline"></ion-icon>
+        Call
+      </button>
+      <ion-icon name="ios-call-outline" item-left></ion-icon>
+      <h2>Driver</h2>
+      <p>{{order?.driver.name}}</p>
+      <p>{{order?.driver.phone}}</p>
+    </ion-item>
+  </div>
+
+  <ion-item *ngIf="isDelivery">
+    <ion-icon name="ios-home" item-left></ion-icon>
+    <button (click)="openMap(order.address)" ion-button outline item-right icon-left>
+      <ion-icon name="ios-map-outline"></ion-icon>
+      Map
+    </button>
+    <h2>Address</h2>
+    <h3><span [hidden]="!order?.address?.unitNumber">unit: {{order?.address?.unitNumber}},</span> {{order?.address?.buildingNumber}} {{order?.address?.streetName}}</h3>
+    <p>{{order?.address?.city}} {{order?.address?.postalCode}} {{order?.address?.state}}</p>
+  </ion-item>
+
+  <ion-item [hidden]="!order?.contact.phone">
+    <button (click)="callNumber(order.contact.phone)" ion-button outline item-right icon-left>
+      <ion-icon name="ios-call-outline"></ion-icon>
+      Call
+    </button>
+    <ion-icon name="ios-call-outline" item-left></ion-icon>
+    <h2>Phone</h2>
+    {{order?.contact.phone}}
+  </ion-item>
+
+  <ion-item [hidden]="!order?.contact.email">
+    <!-- <button ion-button outline item-right icon-left>
+      <ion-icon name="ios-mail-outline"></ion-icon>
+      Mail
+    </button> -->
+    <ion-icon name="ios-at-outline" item-left></ion-icon>
+    <h2>Email</h2>
+    {{order?.contact.email}}
+  </ion-item>
+
+  <ion-item>
+    <ion-icon name="ios-card" item-left></ion-icon>
+    Pay using 
+    <ion-note item-right color="secondary">{{order?.transaction.paymentType}}</ion-note>
+  </ion-item>
+
+  <ion-item>
+    <ion-icon name="ios-cash" item-left></ion-icon>
+    Total
+    <ion-note item-right>{{configService.currency.sign}}{{order?.transaction.total}}</ion-note>
+  </ion-item>
+
+  <ion-item>
+    <ion-icon name="md-grid" item-left></ion-icon>
+    Tracking ID
+    <ion-badge item-right>{{order?.objectId}}</ion-badge>
+  </ion-item>
+  
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <!-- <p>Ash, Misty, Brock</p> -->
+    <ion-buttons end>
+
+    <!-- SHARED SECTION -->
+      <button ion-button color="fb-color" (click)="call()">
+        CALL
+        <ion-icon name="call"></ion-icon>
+      </button>
+
+      <button *ngIf="isDelivery" ion-button color="fb-color" (click)="openAddressOnMaps()">
+        MAP
+        <ion-icon name="ios-navigate-outline"></ion-icon>
+      </button>
+      
+
+      <!-- <button [hidden]="!showCallDriver" ion-button color="fb-color" (click)="callDriver(order.driver)">
+        CALL DRIVER
+        <ion-icon name="call"></ion-icon>
+      </button> -->
+
+      
+      <!-- CLIENTS FOOTER BUTTONS -->
+      
+      
+      <button ion-button icon-right color="primary" [hidden]="!showCancelButton" (click)="cancelOrder(order.objectId,order.status)"  >
+        CANCEL  
+        <ion-icon name="ios-trash-outline"></ion-icon>
+      </button>
+
+      <!-- ADMIN FOOTER BUTTONS -->
+     
+      <button ion-button icon-right color="primary" [hidden]="!showDeclineButton" (click)="declineOrder(order.objectId,order.status)"  >
+        DECLINE  
+        <ion-icon name="ios-trash-outline"></ion-icon>
+      </button>
+      <button ion-button color="secondary" [hidden]="!showApproveButton" (click)="approveOrder(order.objectId,order.status)">
+        APPROVE
+        <ion-icon name="ios-checkmark-circle-outline"></ion-icon>
+      </button>
+      <button ion-button color="fb-color" [hidden]="!showDeliverButton" (click)="showDriverSelectionAlert(order.objectId,order.status)">
+        DELIVER
+        <ion-icon name="ios-bicycle-outline"></ion-icon>
+      </button>
+      <button ion-button color="secondary" [hidden]="!showCompleteButton" (click)="completeOrder(order.objectId,order.status)">
+        COMPLETE
+        <ion-icon name="md-done-all"></ion-icon>
+      </button>      
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
