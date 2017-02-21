@@ -38,6 +38,27 @@ export class ImageService {
 	});
   }
 
+  getMultipleParseFilesBase64(fileInput){
+  	let me = this;
+	let reader = new FileReader();
+	return new Promise((resolve, reject) => { 
+		if (fileInput.target.files.length>0) {
+			reader.onload = function (e : any) {
+		      	if(e.target.result){
+		      		console.log(e)
+		      		// let parseFileBase64 = me.getParseFile(fileInput.target.files[0].name, { base64: e.target.result });
+		      		// resolve(parseFileBase64);
+		      	}else{
+		      		reject({message:"Error getting file(s)"});
+		    	}
+			}
+			reader.readAsDataURL(fileInput.target.files[0]);
+		}else{
+			reject({message:"No file(s) selected"});
+		}
+	});
+  }
+
   // name : String,  encoding : base64-encoded 
   getParseFile(name, encoding){
     name = name.replace(/[^a-zA-Z0-9_.]/g, '');

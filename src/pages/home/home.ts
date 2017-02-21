@@ -5,6 +5,8 @@ import {CloudService} from '../../providers/cloud-service';
 import {ConfigService} from '../../providers/config-service';
 import {MenuService} from '../../providers/menu-service';
 
+import {AddCategoryModal} from '../addCategoryModal/modal-content';
+
 /*
   Generated class for the Home page.
 
@@ -60,8 +62,6 @@ export class HomePage {
   initializeFetchMenuEvent(){
   	let me = this;
     this.fetchMenuEvent = (menu) => {
-      console.log("fetchMenu:event");
-      console.log(menu);
       me.menu = menu;
     };
   }

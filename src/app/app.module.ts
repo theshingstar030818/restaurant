@@ -16,6 +16,7 @@ import { ConfigService } from '../providers/config-service';
 import { ImageService } from '../providers/image-service';
 import { MenuService } from '../providers/menu-service';
 
+import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { MenuService } from '../providers/menu-service';
     LoginPage,
     RegisterPage,
     OrdersAdminPage,
-    UserPage
+    UserPage,
+    AddCategoryModal
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -40,7 +42,8 @@ import { MenuService } from '../providers/menu-service';
     LoginPage,
     RegisterPage,
     OrdersAdminPage,
-    UserPage
+    UserPage,
+    AddCategoryModal
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},

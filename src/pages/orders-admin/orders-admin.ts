@@ -16,7 +16,6 @@ export class OrdersAdminPage {
   constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad OrdersAdminPage');
   }
 
 }
