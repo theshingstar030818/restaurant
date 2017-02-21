@@ -18,12 +18,12 @@ export class MenuService {
   constructor(public http: Http) {
     let me = this;
     console.log("MenuService ....");
- //    Parse.Cloud.run('getMenu').then(function(menu) {
- //    	me.menu = menu;
-	// });
-	getMenu().then((menu) => {
-		console.log(menu);
+    Parse.Cloud.run('getMenu').then(function(menu) {
+    	me.menu = menu;
 	});
+	// getMenu().then((menu) => {
+	// 	console.log(menu);
+	// });
   }
 }
 
@@ -69,10 +69,11 @@ function menuArrayToMap(array){
 			};
 			getRelationObjects(array[i], "items").then((items) => {
 				console.log("getRelationObjects items returnd : " + items);
-				menuMap[array[i].id].items = items;
-				getRelationObjects(array[i], "images").then((images) => {
+				menuMap[items["obj"].id].items = items["returnObject"];
+
+				getRelationObjects(items["obj"], "images").then((images) => {
 					console.log("getRelationObjects images returnd : " + images);
-					menuMap[array[i].id].images = images;
+					menuMap[images["obj"].id].items = images["returnObject"];
 					--ajaxCallsRemaining;
 					console.log("ajaxCallsRemaining : " + ajaxCallsRemaining);
 					if (ajaxCallsRemaining <= 0) {
@@ -102,7 +103,7 @@ function getRelationObjects(obj,relationName){
 		  	returnObject.array = results;
 		  	returnObject.map = arrayToMap(results);
 		  	console.log("resolve getRelationObjects : returnObject : " + returnObject);
-		  	resolve(returnObject);
+		  	resolve({returnObject:returnObject, obj:obj});
 		  }
 		});
 	});
