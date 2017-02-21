@@ -12,6 +12,7 @@ Parse.Cloud.define("getMenu", function(request, response) {
 	menuQuery.include("items");
 	menuQuery.find({
 	  success: function(menu) {
+	  	console.log("menu has : " + menu.length + " many items");
 	    menuReturnObject["array"] = menu;
 	    menuArrayToMap(menu).then((map) => {
 	    	menuReturnObject["map"] = map;
@@ -32,6 +33,7 @@ function menuArrayToMap(array){
 	console.log("ajaxCallsRemaining : " + ajaxCallsRemaining);
 	return new Promise((resolve, reject) => {
 		for (var i = 0; i < array.length; i++) {
+			console.log("Menu obj : " + array[i].id);
 			menuMap[array[i].id] = {
 				object:array[i],
 				items:null,
@@ -44,6 +46,7 @@ function menuArrayToMap(array){
 					--ajaxCallsRemaining;
 					console.log("ajaxCallsRemaining : " + ajaxCallsRemaining);
 					if (ajaxCallsRemaining <= 0) {
+						console.log("resolve menuMap");
 						resolve(menuMap);
 					}
 				});
@@ -55,7 +58,7 @@ function menuArrayToMap(array){
 
 
 function getRelationObjects(obj,relationName){
-	console.log("cloud : getRelationObjects");
+	console.log("cloud : getRelationObjects for obj : " + obj.id + " relationName : " + relationName);
 	return new Promise((resolve, reject) => {
 		var returnObject = {
 			array: null,
@@ -68,6 +71,7 @@ function getRelationObjects(obj,relationName){
 		  	console.log("getRelationObjects-> relationName: " + relationName  + " total : " + results.length);
 		  	returnObject.array = results;
 		  	returnObject.map = arrayToMap();
+		  	console.log("resolve getRelationObjects : returnObject : " + returnObject);
 		  	resolve(returnObject);
 		  }
 		});
@@ -75,9 +79,11 @@ function getRelationObjects(obj,relationName){
 }
 
 function arrayToMap(array){
+	console.log("converting arrayToMap length : " + array.length);
 	var map = {};
 	for (var i = 0; i < array.length; i++) {
 		map[array[i].id] = array[i];
 	}
+	console.log("arrayToMap return : " + map);
 	return map;
 }
