@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
+import Parse from 'parse';
+
 /*
   Generated class for the MenuService provider.
 
@@ -11,8 +13,23 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class MenuService {
 
+	menu: any;
+
   constructor(public http: Http) {
-    console.log('Hello MenuService Provider');
+    let me = this;
+    console.log("MenuService ....");
+    Parse.Cloud.run('getMenu').then(function(menu) {
+    	me.menu = menu;
+	});
+  }
+
+  testCloud(){
+  	Parse.Cloud.run('getMoreFeed', { 
+        
+      }).then(function(posts) {
+        console.log(posts);
+      });
+    
   }
 
 }

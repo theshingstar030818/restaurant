@@ -1,7 +1,7 @@
 
 
 Parse.Cloud.define("getMenu", function(request, response) {
-  	
+  	console.log("cloud : getMenu");
 	var menuReturnObject = {
 
 	};
@@ -15,6 +15,7 @@ Parse.Cloud.define("getMenu", function(request, response) {
 	    menuReturnObject["array"] = menu;
 	    menuArrayToMap(menu).then((map) => {
 	    	menuReturnObject["map"] = map;
+	    	console.log("response.success");
 	    	response.success(menuReturnObject);
 	    });
 	  },
@@ -22,12 +23,13 @@ Parse.Cloud.define("getMenu", function(request, response) {
 	    response.error(error);
 	  }
 	});
-  
 });
 
 function menuArrayToMap(array){
+	console.log("cloud : menuArrayToMap");
 	var menuMap = {};
 	var ajaxCallsRemaining = array.length;
+	console.log("ajaxCallsRemaining : " + ajaxCallsRemaining);
 	return new Promise((resolve, reject) => {
 		for (var i = 0; i < array.length; i++) {
 			menuMap[array[i].id] = {
@@ -40,6 +42,7 @@ function menuArrayToMap(array){
 				getRelationObjects(array[i], "images").then((images) => {
 					menuMap[array[i].id].images = images;
 					--ajaxCallsRemaining;
+					console.log("ajaxCallsRemaining : " + ajaxCallsRemaining);
 					if (ajaxCallsRemaining <= 0) {
 						resolve(menuMap);
 					}
@@ -52,7 +55,7 @@ function menuArrayToMap(array){
 
 
 function getRelationObjects(obj,relationName){
-	
+	console.log("cloud : getRelationObjects");
 	return new Promise((resolve, reject) => {
 		var returnObject = {
 			array: null,
@@ -62,6 +65,7 @@ function getRelationObjects(obj,relationName){
 		var query = relation.query();
 		query.find({
 		  success: function(results){
+		  	console.log("getRelationObjects-> relationName: " + relationName  + " total : " + results.length);
 		  	returnObject.array = results;
 		  	returnObject.map = arrayToMap();
 		  	resolve(returnObject);

@@ -14,6 +14,7 @@ import {OrdersAdminPage} from '../pages/orders-admin/orders-admin';
 import { CloudService } from '../providers/cloud-service';
 import { ConfigService } from '../providers/config-service';
 import { ImageService } from '../providers/image-service';
+import { MenuService } from '../providers/menu-service';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { ImageService } from '../providers/image-service';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     CloudService,
     ConfigService,
-    ImageService
+    ImageService,
+    MenuService
   ]
 })
 export class AppModule {}
