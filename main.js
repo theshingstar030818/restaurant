@@ -40,8 +40,10 @@ function menuArrayToMap(array){
 				images:null
 			};
 			getRelationObjects(array[i], "items").then((items) => {
+				console.log("getRelationObjects items returnd : " + items);
 				menuMap[array[i].id].items = items;
 				getRelationObjects(array[i], "images").then((images) => {
+					console.log("getRelationObjects images returnd : " + images);
 					menuMap[array[i].id].images = images;
 					--ajaxCallsRemaining;
 					console.log("ajaxCallsRemaining : " + ajaxCallsRemaining);
@@ -70,7 +72,7 @@ function getRelationObjects(obj,relationName){
 		  success: function(results){
 		  	console.log("getRelationObjects-> relationName: " + relationName  + " total : " + results.length);
 		  	returnObject.array = results;
-		  	returnObject.map = arrayToMap();
+		  	returnObject.map = arrayToMap(results);
 		  	console.log("resolve getRelationObjects : returnObject : " + returnObject);
 		  	resolve(returnObject);
 		  }
