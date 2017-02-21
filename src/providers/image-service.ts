@@ -13,6 +13,9 @@ import Parse from 'parse';
 @Injectable()
 export class ImageService {
 
+	private filesCounter:any;
+	private filesArray: Array<any> = [];
+
   constructor(
   	public http: Http
   ) {}
@@ -31,7 +34,6 @@ export class ImageService {
 			      }
 			  }
 			  reader.readAsDataURL(fileInput.target.files[0]);
-		  
 		}else{
 			reject({message:"Only one file allowed"});
 		}
@@ -40,19 +42,28 @@ export class ImageService {
 
   getMultipleParseFilesBase64(fileInput){
   	let me = this;
-	let reader = new FileReader();
+  	let readers = {};
 	return new Promise((resolve, reject) => { 
 		if (fileInput.target.files.length>0) {
-			reader.onload = function (e : any) {
-		      	if(e.target.result){
-		      		console.log(e)
-		      		// let parseFileBase64 = me.getParseFile(fileInput.target.files[0].name, { base64: e.target.result });
-		      		// resolve(parseFileBase64);
-		      	}else{
-		      		reject({message:"Error getting file(s)"});
-		    	}
+			for(let i=0; i<fileInput.target.files.length; i++){
+				me.filesCounter = 0;
+				me.filesArray = [];
+				readers[i] = new FileReader();
+				readers[i].onload = function (e : any) {
+			      	if(e.target.result){
+			      		let parseFileBase64 = me.getParseFile(fileInput.target.files[i].name, { base64: e.target.result });
+			      		me.filesArray.push(parseFileBase64);
+			      		me.filesCounter++;
+			      		if (me.filesCounter >= fileInput.target.files.length) {
+			      			resolve(me.filesArray);
+			      		}
+			      	}else{
+			      		reject({message:"Error getting file(s)"});
+			    	}
+				}
+				readers[i].readAsDataURL(fileInput.target.files[i]);
 			}
-			reader.readAsDataURL(fileInput.target.files[0]);
+
 		}else{
 			reject({message:"No file(s) selected"});
 		}

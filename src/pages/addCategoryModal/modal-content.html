@@ -13,16 +13,51 @@
 
 <ion-content>
   <ion-list>
+      <ion-item *ngIf="files.length>0">
+        <ion-col center>
+          <div *ngFor="let file of files; let i = index">
+            <ion-row *ngIf="i%2==0">
+              <ion-col *ngIf="files[i]" >
+                  <div class="list-items" center>
+                    <div center>
+                      <ion-thumbnail center>
+                          <img src="data:{{files[i]._source.type}};{{files[i]._source.format}},{{files[i]._source.base64}}"/>
+                          <div [hidden]="false" (click)="removeImage(i)">
+                            <ion-icon name="md-close"></ion-icon>
+                          </div>
+                      </ion-thumbnail>
+                  </div>
+                </div>
+              </ion-col>
+              <ion-col *ngIf="files[i+1]" >
+                  <div class="list-items" center>
+                    <div center>
+                      <ion-thumbnail center>
+                          <img src="data:{{files[i+1]._source.type}};{{files[i+1]._source.format}},{{files[i+1]._source.base64}}"/>
+                          <div [hidden]="false" (click)="removeImage(i+1)">
+                            <ion-icon name="md-close"></ion-icon>
+                          </div>
+                      </ion-thumbnail>
+                  </div>
+                </div>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ion-col>
+      </ion-item>
+
       <ion-item>
-        <ion-label fixed>Name</ion-label>
+        <ion-icon name="md-photos" item-left></ion-icon>
+        {{files.length}} images selected
+        <button ion-button round color="primary" item-right (click)="clickSelect()">Select</button>
+        <input id="files" hidden="true" (change)="fileChangeEvent($event)" type="file" multiple/>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating>Name</ion-label>
         <ion-input [(ngModel)]="name" type="text" value=""></ion-input>
       </ion-item>
-      <ion-item>
-        Upload Image
-        <button ion-button outline item-right icon-left>
-          <input (change)="fileChangeEvent($event)" type="file" multiple/>
-        </button>
-      </ion-item>
+      
       <ion-item>
         <button (click)="createCategory()" ion-button block>Save</button>
       </ion-item>

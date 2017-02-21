@@ -76,6 +76,39 @@ export class CloudService {
     });
   }
 
+  saveFiles(files){
+    let me = this;
+    let filesCount = files.length;
+    let savedFiles = [];
+    return new Promise((resolve, reject) => {
+      for(let i=0;i<filesCount;i++){
+        me.saveFile(files[i]).then((file) => {
+          savedFiles.push(file);
+          if(savedFiles.length == filesCount){
+            resolve(savedFiles);
+          }
+        });
+      }
+    });
+  }
+
+  saveFile(parseFile){
+    return new Promise((resolve, reject) => {
+      var File = Parse.Object.extend("File");
+      var file = new File();
+      file.set("file", parseFile);
+      file.set("isDeleted", false);
+      file.save(null, {
+        success: function(savedFile) {
+          resolve(savedFile);
+        },
+        error: function(gameScore, error) {
+          reject(error);
+        }
+      });
+    });
+  }
+
   getRootPage(): any{
   	if(Parse.User.current().get("type") == "admin"){
     	return OrdersAdminPage;

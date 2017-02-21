@@ -12,6 +12,14 @@
 
 // global styles
 
+// edit buttons 
+.edit-button{
+  top: 0%; 
+  right: 0%;
+  position: absolute; 
+  margin: 1%;
+}
+
 .primary-bg {
   background-color: color($colors, primary);
 }

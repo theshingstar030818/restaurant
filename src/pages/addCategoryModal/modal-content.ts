@@ -1,10 +1,8 @@
 import {Component} from '@angular/core';
+import { Platform, NavParams, ViewController, AlertController, LoadingController, Events } from 'ionic-angular';
 
-import { Platform, NavParams, ViewController, AlertController, LoadingController } from 'ionic-angular';
-
-import {MenuService} from '../../services/menu-service';
-
-import Parse from 'parse';
+import {ImageService} from '../../providers/image-service';
+import {MenuService} from '../../providers/menu-service';
 
 @Component({
   templateUrl: 'modal-content.html'
@@ -13,7 +11,7 @@ import Parse from 'parse';
 export class AddCategoryModal {
   
   public name: any;
-  public file: any;
+  public files: any = [];
   public fileDetailObject: any;
 
   constructor(
@@ -21,56 +19,41 @@ export class AddCategoryModal {
     public params: NavParams,
     public viewCtrl: ViewController,
     public alertCtrl: AlertController,
-    public loadingCtrl: LoadingController
-  ) {
-
-  }
+    public loadingCtrl: LoadingController,
+    public imageService: ImageService,
+    public menuService: MenuService,
+    public events: Events,
+  ) {}
 
   fileChangeEvent(fileInput: any){
-    var me = this;
-    if (fileInput.target.files && fileInput.target.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function (e : any) {
-          //var _imageObjectExt = /[^/]*$/.exec(e.target.result.match(/[^;]*/)[0])[0];
-          var parseFile = new Parse.File( fileInput.target.files[0].name, { base64: e.target.result });
-          me.file = parseFile;
-          me.fileDetailObject = fileInput.target.files[0];
-      }
-      reader.readAsDataURL(fileInput.target.files[0]);
-    }
+    let me = this;
+    me.imageService.getMultipleParseFilesBase64(fileInput).then((files) => {
+      console.log(files);
+      me.files = files;
+    });
   }
 
   createCategory(){
-    var me = this;
-    if(this.name && this.file && this.fileDetailObject){
-      this.presentLoading();
-      // this.menuService.addItem(this.name, this.file,this.fileDetailObject).then((response) => {
-      //   return response;
-      // }).then((menuObject) => {
-      //   //reset modal and dismiss
-      //   me.name = "";
-      //   this.showAlert();
-      //   me.dismiss();
-      // }).catch((ex) => {
-      //   console.error('Error : ', ex);
-      // });
+    let me = this;
+    if(me.name && me.files.length>0){
+      me.presentLoading();
+      me.menuService.addMenuCategory(me.name,me.files).then((response) => {
+        me.events.publish("event:toast", { message: "Saved!", position: "bottom", time:5000});
+        me.dismiss();
+      }).catch((error)=>{
+        me.events.publish("event:toast", { message: error.message, position: "bottom", time:5000});
+      });
     }else{
-      console.warn("Name or file not added");
+      me.events.publish("event:toast", { message: "Name or file not added", position: "bottom", time:5000});
     }
   }
 
-  onChange(event) {
-    var files = event.srcElement.files;
-    console.log(files);
+  clickSelect(){
+    document.getElementById("files").click();
   }
 
-  showAlert() {
-    let alert = this.alertCtrl.create({
-      title: 'Success',
-      subTitle: 'Your new menu category has been added.',
-      buttons: ['OK']
-    });
-    alert.present();
+  removeImage(index){
+    this.files.splice(index, 1);
   }
 
   presentLoading() {

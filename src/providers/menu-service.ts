@@ -3,6 +3,8 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Events } from 'ionic-angular';
 
+import { CloudService } from './cloud-service';
+
 import Parse from 'parse';
 
 /*
@@ -19,6 +21,7 @@ export class MenuService {
   constructor(
   	public http: Http,
   	public events: Events,
+  	public cloudService: CloudService,
   ) {
     let me = this;
     me.fetchMenu();
@@ -30,11 +33,54 @@ export class MenuService {
 
   fetchMenu(){
   	let me = this;
-  	Parse.Cloud.run('getMenu').then(function(menu) {
-    	console.log(menu);
-    	me.menu = menu;
-    	me.events.publish('fetchMenu:event', me.menu);
-	});
+    return new Promise((resolve, reject) => {
+    	Parse.Cloud.run('getMenu').then(function(menu) {
+      	me.menu = menu;
+      	me.events.publish('fetchMenu:event', me.menu);
+        resolve(me.menu);
+  	  });
+    });
+  }
+
+  addMenuCategory(name, images){
+    var me = this;
+    var Menu = Parse.Object.extend("Menu");
+    var menu = new Menu();
+    menu.set("name", name);
+
+    return new Promise((resolve, reject) => {
+    	me.cloudService.saveFiles(images).then((files)=>{
+    		var relation = menu.relation("images");
+    		for(let i=0;i<files["length"];i++){
+    			relation.add(files[i]);
+    		}
+    		menu.save(null, {
+			  success: function(saveMenuCategory) {
+			    me.fetchMenu().then((m) => {
+            resolve(m);
+          });
+			    
+			  },
+			  error: function(gameScore, error) {
+			    reject(error);
+			  }
+			});
+    	});
+    });
+    
+  }
+
+  saveMenuCategory(menu){
+  	return new Promise((resolve, reject) => {
+      menu.save(null, {
+        success: function(menu) {
+          resolve(menu);
+        },
+        error: function(menu, error) {
+          reject(error);
+        }
+      });
+    });
   }
 }
 

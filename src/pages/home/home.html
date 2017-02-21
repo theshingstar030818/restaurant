@@ -25,7 +25,7 @@
         <div class="list-items">
           <div class="item-menu" (click)="viewCategory(menu.array[i].id)">
 
-              <img src="{{configService.companyFiles}}/{{ menu.array[i].get('image').name() }}" alt="{{ menu.array[i].get('name') }}"/>
+              <img src="{{configService.companyFiles}}/{{ menu?.map[menu?.array[i].id]?.images.array[0]?.get('file')?.name()}}"/>
 
               <div class="overlay">
 
@@ -41,7 +41,7 @@
       <ion-col *ngIf="menu.array[i+1]"><div>
         <div class="list-items">
           <div class="item-menu" (click)="viewCategory(menu.array[i+1].id)">
-            <img src="{{configService.companyFiles}}/{{ menu.array[i+1].get('image').name() }}" alt="{{ menu.array[i+1].get('name') }}"/>
+            <img src="{{configService.companyFiles}}/{{ menu?.map[menu?.array[i+1].id]?.images.array[0]?.get('file')?.name()}}"/>
             <div class="overlay">
               <span class="pull-left" color="light">
                 {{ menu.array[i+1].get('name') }}
