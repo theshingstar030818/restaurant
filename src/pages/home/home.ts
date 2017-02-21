@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, Events } from 'ionic-angular';
+import { NavController, NavParams, Events, ModalController } from 'ionic-angular';
 
 import {CloudService} from '../../providers/cloud-service';
 import {ConfigService} from '../../providers/config-service';
@@ -29,8 +29,14 @@ export class HomePage {
   	public menuService: MenuService,
   	public events: Events,
   	public cloudService: CloudService,
+  	public modalCtrl: ModalController,
   ) {
 
+  }
+
+  openModal() {
+    let modal = this.modalCtrl.create(AddCategoryModal);
+    modal.present();
   }
 
   ionViewWillEnter(){
