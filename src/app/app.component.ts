@@ -1,10 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, Events } from 'ionic-angular';
+import { Nav, Platform, Events, ToastController, LoadingController } from 'ionic-angular';
 import { StatusBar, Splashscreen} from 'ionic-native';
+import Parse from 'parse';
 
-import { Page1 } from '../pages/page1/page1';
-import { Page2 } from '../pages/page2/page2';
+import {HomePage} from '../pages/home/home';
+import {LoginPage} from '../pages/login/login';
 
+import { CloudService } from '../providers/cloud-service';
+import { ConfigService } from '../providers/config-service';
 
 @Component({
   templateUrl: 'app.html'
@@ -12,19 +15,77 @@ import { Page2 } from '../pages/page2/page2';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = Page1;
+  user: any;
+  loader: any;
+  pageConfigs: any = {};
+  rootPage: any = LoginPage;
+  pages: Array<{title: string, icon: string, count: any, component: any}>;
 
-  pages: Array<{title: string, component: any}>;
+  //page event handlers
+  private getUserEvent: (user) => void;
+  private toastEvent: (data) => void;
 
-  constructor(public platform: Platform) {
+  constructor(
+    public platform: Platform,
+    public events: Events,
+    public configService : ConfigService,
+    public loadingCtrl: LoadingController,
+    private toastCtrl: ToastController,
+    public cloudService: CloudService,
+  ) {
+    
     this.initializeApp();
-
+    this.initializeEventHandlers();
+    this.subscribeEvents();
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Page One', component: Page1 },
-      { title: 'Page Two', component: Page2 }
+      {title: 'Menu',icon: 'ios-pizza-outline',count: "home_count",component: HomePage}
     ];
 
+  }
+
+  logout(){
+    let me = this;
+    me.presentLoading();
+    me.cloudService.logout();
+    me.nav.setRoot(LoginPage);
+    me.dismissLoading();
+  }
+
+  presentLoading() {
+    let loader = this.loadingCtrl.create({
+      content: "Please wait..."
+    });
+    this.loader = loader;
+    loader.present();
+  }
+
+  dismissLoading(){
+    if(this.loader){
+      this.loader.dismiss().then((response) => {
+        return response;
+      }).then((response) => {
+        console.info(response)
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+  }
+
+  presentToast(message, position,duration) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: duration,
+      showCloseButton: true,
+      position: position,
+      dismissOnPageChange: false
+    });
+
+    toast.onDidDismiss(() => {
+      // console.log('Dismissed toast');
+    });
+
+    toast.present();
   }
 
   initializeApp() {
@@ -40,5 +101,48 @@ export class MyApp {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
+  }
+
+  initializeEventHandlers(){
+    this.initializeGetUserEvent();
+    this.initializeToastEvent();
+  }
+
+  initializeGetUserEvent(){
+    let me = this;
+    this.getUserEvent = (user) => {
+      me.user = user;
+    };
+  }
+
+  initializeToastEvent(){
+    let me = this;
+    this.toastEvent = (data) => {
+      me.presentToast(data.message,data.position, data.time);
+    };
+  }
+
+  subscribeEvents(){    
+    this.events.subscribe('getUserEvent', this.getUserEvent);
+    this.events.subscribe('event:toast', this.toastEvent);
+  }
+
+  unsubscribeEventHandlers(){
+    this.unsubscribeGetUserEvent();
+    this.unsubscribeToastEvent();
+  }
+
+  unsubscribeGetUserEvent(){
+    if(this.getUserEvent){
+      this.events.unsubscribe('getPostCommentsEvent', this.getUserEvent);
+      this.getUserEvent = undefined;
+    }
+  }
+
+  unsubscribeToastEvent(){
+    if(this.toastEvent){
+      this.events.unsubscribe('event:toast', this.toastEvent);
+      this.toastEvent = undefined;
+    }
   }
 }

@@ -1,17 +1,33 @@
 <ion-menu [content]="content">
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>Menu</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <ion-content>
-    <ion-list>
-      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
-        {{p.title}}
+  <ion-content class="menu-left">
+    <!-- User profile -->
+    <div text-center padding-top padding-bottom class="primary-bg menu-left">
+      <a menuClose (click)="viewMyProfile()">
+        <div *ngIf="imageCacheInit&&user?.image?.url">          
+          <img class="profile-picture" src="{{user?.image?.url}}"/>
+        </div>
+        <h4 color="light">{{user?.username}}</h4>
+      </a>
+    </div>
+
+    <ion-list class="list-full-border">
+      <button ion-item menuClose *ngFor="let page of pages" (click)="openPage(page)">
+        <ion-icon item-left name="{{ page.icon }}"></ion-icon>
+        {{ page?.title }}
+        <ion-badge danger item-right *ngIf="pageConfigs[page.title]?.count">{{ pageConfigs[page.title]?.count }}</ion-badge>
       </button>
     </ion-list>
   </ion-content>
+
+  <ion-footer>
+    <ion-list>
+      <button ion-item menuClose (click)="logout()">
+        <ion-icon item-left name="ios-exit-outline"></ion-icon>
+        Logout
+      </button>
+    </ion-list>
+  </ion-footer>
 
 </ion-menu>
 
