@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Events } from 'ionic-angular';
 
 import Parse from 'parse';
 
@@ -15,24 +16,33 @@ export class MenuService {
 
 	menu: any;
 
-  constructor(public http: Http) {
+  constructor(
+  	public http: Http,
+  	public events: Events,
+  ) {
     let me = this;
-    console.log("MenuService ....");
-    Parse.Cloud.run('getMenu').then(function(menu) {
-    	me.menu = menu;
-	});
-	// getMenu().then((menu) => {
-	// 	console.log(menu);
+    me.fetchMenu();
+  }
+
+  getMenu(){
+  	return this.menu;
+  }
+
+  fetchMenu(){
+  	let me = this;
+  	getMenu();
+ //  	Parse.Cloud.run('getMenu').then(function(menu) {
+ //    	console.log(menu);
+ //    	me.menu = menu;
+ //    	me.events.publish('fetchMenu:event', me.menu);
 	// });
   }
 }
 
 function getMenu(){
-	console.log("cloud : getMenu");
-	var menuReturnObject = {
-
-	};
 	return new Promise((resolve, reject) => {
+		console.log("cloud : getMenu");
+		var menuReturnObject = {};
 	  	var Menu = Parse.Object.extend("Menu");
 		var menuQuery = new Parse.Query(Menu);
 		menuQuery.include("images");
@@ -73,7 +83,7 @@ function menuArrayToMap(array){
 
 				getRelationObjects(items["obj"], "images").then((images) => {
 					console.log("getRelationObjects images returnd : " + images);
-					menuMap[images["obj"].id].items = images["returnObject"];
+					menuMap[images["obj"].id].images = images["returnObject"];
 					--ajaxCallsRemaining;
 					console.log("ajaxCallsRemaining : " + ajaxCallsRemaining);
 					if (ajaxCallsRemaining <= 0) {

@@ -45,7 +45,7 @@ function menuArrayToMap(array){
 
 				getRelationObjects(items["obj"], "images").then((images) => {
 					console.log("getRelationObjects images returnd : " + images);
-					menuMap[images["obj"].id].items = images["returnObject"];
+					menuMap[images["obj"].id].images = images["returnObject"];
 					--ajaxCallsRemaining;
 					console.log("ajaxCallsRemaining : " + ajaxCallsRemaining);
 					if (ajaxCallsRemaining <= 0) {

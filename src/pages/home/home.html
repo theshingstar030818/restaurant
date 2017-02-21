@@ -19,4 +19,50 @@
 
   <h3 text-center>{{configService.companyName}}</h3>
 
+  <div *ngFor="let category of menu?.array; let i = index">
+    <ion-row *ngIf="i%2==0">
+      <ion-col *ngIf="menu.array[i]" ><div>
+        <div class="list-items">
+          <div class="item-menu" (click)="viewCategory(menu.array[i].id)">
+
+              <img src="{{configService.companyFiles}}/{{ menu.array[i].get('image').name() }}" alt="{{ menu.array[i].get('name') }}"/>
+
+              <div class="overlay">
+
+                <span class="pull-left" color="light">
+                  {{ menu.array[i].get('name') }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+
+      <ion-col *ngIf="menu.array[i+1]"><div>
+        <div class="list-items">
+          <div class="item-menu" (click)="viewCategory(menu.array[i+1].id)">
+            <img src="{{configService.companyFiles}}/{{ menu.array[i+1].get('image').name() }}" alt="{{ menu.array[i+1].get('name') }}"/>
+            <div class="overlay">
+              <span class="pull-left" color="light">
+                {{ menu.array[i+1].get('name') }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div></ion-col>
+
+    </ion-row>
+  </div>
+
 </ion-content>
+
+<ion-footer *ngIf="cloudService?.user?.get('type')=='admin'">
+  <ion-toolbar>
+    <ion-buttons end>
+      <button (click)="openModal()" ion-button icon-right color="royal">
+        Add
+        <ion-icon name="md-add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
