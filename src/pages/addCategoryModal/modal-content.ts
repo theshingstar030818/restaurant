@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import { Platform, NavParams, ViewController, AlertController, LoadingController, Events } from 'ionic-angular';
 
 import {ImageService} from '../../providers/image-service';
-import {MenuService} from '../../providers/menu-service';
+import {CloudService} from '../../providers/cloud-service';
 
 @Component({
   templateUrl: 'modal-content.html'
@@ -21,7 +21,7 @@ export class AddCategoryModal {
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public imageService: ImageService,
-    public menuService: MenuService,
+    public cloudService: CloudService,
     public events: Events,
   ) {}
 
@@ -37,7 +37,7 @@ export class AddCategoryModal {
     let me = this;
     if(me.name && me.files.length>0){
       me.presentLoading();
-      me.menuService.addMenuCategory(me.name,me.files).then((response) => {
+      me.cloudService.addMenuCategory(me.name,me.files).then((response) => {
         me.events.publish("event:toast", { message: "Saved!", position: "bottom", time:5000});
         me.dismiss();
       }).catch((error)=>{

@@ -4,17 +4,16 @@ import { MyApp } from './app.component';
 
 import { Page1 } from '../pages/page1/page1';
 import { Page2 } from '../pages/page2/page2';
-
-import {HomePage} from '../pages/home/home';
-import {LoginPage} from '../pages/login/login';
-import {UserPage} from '../pages/user/user';
-import {RegisterPage} from '../pages/register/register';
-import {OrdersAdminPage} from '../pages/orders-admin/orders-admin';
-
+import { HomePage } from '../pages/home/home';
+import { LoginPage } from '../pages/login/login';
+import { UserPage } from '../pages/user/user';
+import { RegisterPage } from '../pages/register/register';
 import { CloudService } from '../providers/cloud-service';
 import { ConfigService } from '../providers/config-service';
+import { OrdersAdminPage } from '../pages/orders-admin/orders-admin';
+import { CategoryPage } from '../pages/category/category';
 import { ImageService } from '../providers/image-service';
-import { MenuService } from '../providers/menu-service';
+
 
 import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
 
@@ -26,9 +25,10 @@ import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
     HomePage,
     LoginPage,
     RegisterPage,
-    OrdersAdminPage,
     UserPage,
-    AddCategoryModal
+    OrdersAdminPage,
+    AddCategoryModal,
+    CategoryPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -41,16 +41,16 @@ import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
     HomePage,
     LoginPage,
     RegisterPage,
-    OrdersAdminPage,
     UserPage,
-    AddCategoryModal
+    OrdersAdminPage,
+    AddCategoryModal,
+    CategoryPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     CloudService,
     ConfigService,
-    ImageService,
-    MenuService
+    ImageService
   ]
 })
 export class AppModule {}

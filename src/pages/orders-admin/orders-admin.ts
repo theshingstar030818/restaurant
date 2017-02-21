@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { Component, Injectable, Inject, forwardRef } from '@angular/core';
+import { NavController, NavParams, Events } from 'ionic-angular';
+
+import {CloudService} from '../../providers/cloud-service';
+
 
 /*
   Generated class for the OrdersAdmin page.
@@ -13,9 +16,18 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class OrdersAdminPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  cloudService: CloudService;
+
+  constructor(@Inject(forwardRef(() => CloudService)) cloudService: CloudService,
+  	public navCtrl: NavController, 
+  	public navParams: NavParams,
+  	public events: Events,
+  ) {
+    this.cloudService = cloudService;
+  }
 
   ionViewDidLoad() {
+  
   }
 
 }

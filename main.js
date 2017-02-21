@@ -17,7 +17,10 @@ Parse.Cloud.define("getMenu", function(request, response) {
 	    menuArrayToMap(menu).then((map) => {
 	    	menuReturnObject["map"] = map;
 	    	console.log("response.success");
-	    	response.success(menuReturnObject);
+	    	getAllMenuItems(request.params.user).then((menuItemsObject)=>{
+	    		menuReturnObject["allMenuItems"] = menuItemsObject;
+	    		response.success(menuReturnObject);
+	    	});	    	
 	    });
 	  },
 	  error: function(error) {
@@ -25,6 +28,25 @@ Parse.Cloud.define("getMenu", function(request, response) {
 	  }
 	});
 });
+
+function getAllMenuItems(user){
+  return new Promise((resolve, reject) => {
+    var menuItemsReturnObject = {};
+    var MenuItem = Parse.Object.extend("MenuItem");
+    var menuItemQuery = new Parse.Query(MenuItem);
+    if(user.get("type")!="admin"){menuItemQuery.equalTo("isDeleted", false)}  
+    menuItemQuery.find({
+      success: function(results) {
+        menuItemsReturnObject["array"] = results;
+        menuItemsReturnObject["map"] = arrayToMap(results);
+        resolve(menuItemsReturnObject);
+      },
+      error: function(error) {
+        reject(error);
+      }
+    });
+  });
+}
 
 function menuArrayToMap(array){
 	console.log("cloud : menuArrayToMap");

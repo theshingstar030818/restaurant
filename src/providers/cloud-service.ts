@@ -7,8 +7,7 @@ import Parse from 'parse';
 
 import { HomePage } from '../pages/home/home';
 import { OrdersAdminPage } from '../pages/orders-admin/orders-admin';
-
-import { ConfigService } from './config-service'
+import { ConfigService } from './config-service';
 
 /*
   Generated class for the CloudService provider.
@@ -20,6 +19,7 @@ import { ConfigService } from './config-service'
 export class CloudService {
 
 	public user: any = null;
+  public menu: any;
 
   constructor(
   	public http: Http,
@@ -31,6 +31,7 @@ export class CloudService {
     Parse.serverURL = 'http://162.243.118.87:1339/parse';
     this.user = Parse.User.current();
 	  configService.init();
+    this.fetchMenu();
   }
 
   getUser(){
@@ -165,4 +166,155 @@ export class CloudService {
       });
   }
 
+  getMenu(){
+    return this.menu;
+  }
+
+  fetchMenu(){
+    let me = this;
+    return new Promise((resolve, reject) => {
+      Parse.Cloud.run('getMenu').then(function(menu) {
+        me.menu = menu;
+        me.events.publish('fetchMenu:event', me.menu);
+        resolve(me.menu);
+      });
+    });
+  }
+
+  addMenuCategory(name, images){
+    var me = this;
+    var Menu = Parse.Object.extend("Menu");
+    var menu = new Menu();
+    menu.set("name", name);
+
+    return new Promise((resolve, reject) => {
+      me.saveFiles(images).then((files)=>{
+        var relation = menu.relation("images");
+        for(let i=0;i<files["length"];i++){
+          relation.add(files[i]);
+        }
+        menu.save(null, {
+        success: function(saveMenuCategory) {
+          me.fetchMenu().then((m) => {
+            resolve(m);
+          });
+          
+        },
+        error: function(gameScore, error) {
+          reject(error);
+        }
+      });
+      });
+    });
+    
+  }
+
+  saveMenuCategory(menu){
+    return new Promise((resolve, reject) => {
+      menu.save(null, {
+        success: function(menu) {
+          resolve(menu);
+        },
+        error: function(menu, error) {
+          reject(error);
+        }
+      });
+    });
+  }
+
 }
+
+
+// function getMenu(){
+//   return new Promise((resolve, reject) => {
+//     var menuReturnObject = {};
+//     var Menu = Parse.Object.extend("Menu");
+//     var menuQuery = new Parse.Query(Menu);
+//     menuQuery.include("images");
+//     menuQuery.include("items");
+//     menuQuery.find({
+//       success: function(menu) {
+//         menuReturnObject["array"] = menu;
+//         menuArrayToMap(menu).then((map) => {
+//           menuReturnObject["map"] = map;
+//           resolve(menuReturnObject);
+//         });
+//       },
+//       error: function(error) {
+//         reject(error);
+//       }
+//     });
+//   });
+// }
+
+// function getAllMenuItems(user){
+//   return new Promise((resolve, reject) => {
+//     var menuItemsReturnObject = {};
+//     var MenuItem = Parse.Object.extend("MenuItem");
+//     var menuItemQuery = new Parse.Query(MenuItem);
+//     if(user.get("type")!="admin"){menuItemQuery.equalTo("isDeleted", false)}  
+//     menuItemQuery.find({
+//       success: function(results) {
+//         menuItemsReturnObject["array"] = results;
+//         menuItemsReturnObject["map"] = arrayToMap(results);
+//         resolve(menuItemsReturnObject);
+//       },
+//       error: function(error) {
+//         reject(error);
+//       }
+//     });
+//   });
+// }
+
+// function menuArrayToMap(array){
+//   var menuMap = {};
+//   var ajaxCallsRemaining = array.length;
+//   return new Promise((resolve, reject) => {
+//     for (var i = 0; i < array.length; i++) {
+//       menuMap[array[i].id] = {
+//         object:array[i],
+//         items:null,
+//         images:null
+//       };
+//       getRelationObjects(array[i], "items").then((items) => {
+//         menuMap[items["obj"].id].items = items["returnObject"];
+
+//         getRelationObjects(items["obj"], "images").then((images) => {
+//           menuMap[images["obj"].id].images = images["returnObject"];
+//           --ajaxCallsRemaining;
+//           if (ajaxCallsRemaining <= 0) {
+//             resolve(menuMap);
+//           }
+//         });
+//       });
+//     }
+//   });
+    
+// }
+
+
+// function getRelationObjects(obj,relationName){
+//   return new Promise((resolve, reject) => {
+//     var returnObject = {
+//       array: null,
+//       map: null
+//     }; 
+//     var relation = obj.relation(relationName);
+//     var query = relation.query();
+//     query.find({
+//       success: function(results){
+//         returnObject.array = results;
+//         returnObject.map = arrayToMap(results);
+//         resolve({returnObject:returnObject, obj:obj});
+//       }
+//     });
+//   });
+// }
+
+// function arrayToMap(array){
+//   var map = {};
+//   for (var i = 0; i < array.length; i++) {
+//     map[array[i].id] = array[i];
+//   }
+//   return map;
+// }

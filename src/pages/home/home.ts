@@ -3,8 +3,7 @@ import { NavController, NavParams, Events, ModalController } from 'ionic-angular
 
 import {CloudService} from '../../providers/cloud-service';
 import {ConfigService} from '../../providers/config-service';
-import {MenuService} from '../../providers/menu-service';
-
+import {CategoryPage} from '../category/category';
 import {AddCategoryModal} from '../addCategoryModal/modal-content';
 
 /*
@@ -28,7 +27,6 @@ export class HomePage {
   	public navCtrl: NavController, 
   	public navParams: NavParams,
   	public configService: ConfigService,
-  	public menuService: MenuService,
   	public events: Events,
   	public cloudService: CloudService,
   	public modalCtrl: ModalController,
@@ -52,7 +50,7 @@ export class HomePage {
 
   ionViewDidLoad() {
     let me = this;
-    me.menu = me.menuService.getMenu();   
+    me.menu = me.cloudService.getMenu();   
   }
 
   initializeEventHandlers(){
@@ -79,6 +77,10 @@ export class HomePage {
       this.events.unsubscribe('fetchMenu:event', this.fetchMenuEvent);
       this.fetchMenuEvent = undefined;
     }
+  }
+
+  viewCategory(category) {
+    this.navCtrl.push(CategoryPage, {category: category});
   }
 
 }

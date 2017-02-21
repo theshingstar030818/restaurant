@@ -10,7 +10,15 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Menu</ion-title>
+    
+    <ion-buttons end>
+      <button *ngIf="cloudService?.user?.get('type')=='admin'" ion-button>
+        <ion-badge item-right><ion-icon name="md-notifications" item-left></ion-icon> 2</ion-badge>
+      </button>
+    </ion-buttons>
+
   </ion-navbar>
+
 </ion-header>
 
 
@@ -23,7 +31,7 @@
     <ion-row *ngIf="i%2==0">
       <ion-col *ngIf="menu.array[i]" ><div>
         <div class="list-items">
-          <div class="item-menu" (click)="viewCategory(menu.array[i].id)">
+          <div class="item-menu" (click)="viewCategory(menu.array[i])">
 
               <img src="{{configService.companyFiles}}/{{ menu?.map[menu?.array[i].id]?.images.array[0]?.get('file')?.name()}}"/>
 
@@ -40,7 +48,7 @@
 
       <ion-col *ngIf="menu.array[i+1]"><div>
         <div class="list-items">
-          <div class="item-menu" (click)="viewCategory(menu.array[i+1].id)">
+          <div class="item-menu" (click)="viewCategory(menu.array[i+1])">
             <img src="{{configService.companyFiles}}/{{ menu?.map[menu?.array[i+1].id]?.images.array[0]?.get('file')?.name()}}"/>
             <div class="overlay">
               <span class="pull-left" color="light">

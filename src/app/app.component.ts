@@ -6,9 +6,7 @@ import Parse from 'parse';
 import {HomePage} from '../pages/home/home';
 import {LoginPage} from '../pages/login/login';
 import {UserPage} from '../pages/user/user';
-
 import { CloudService } from '../providers/cloud-service';
-import { ConfigService } from '../providers/config-service';
 
 @Component({
   templateUrl: 'app.html'
@@ -29,7 +27,6 @@ export class MyApp {
   constructor(
     public platform: Platform,
     public events: Events,
-    public configService : ConfigService,
     public loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     public cloudService: CloudService,
