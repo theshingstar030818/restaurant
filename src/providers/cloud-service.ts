@@ -23,7 +23,8 @@ export class CloudService {
 
   constructor(
   	public http: Http,
-  	public configService: ConfigService
+  	public configService: ConfigService,
+    public events: Events,
   ) {
 
     Parse.initialize('restaurant_app_id');
@@ -33,10 +34,49 @@ export class CloudService {
   }
 
   getUser(){
+    this.events.publish("getUser:event", this.user);
   	return this.user;
   }
 
-  getRootPage(){
+  getEditAbleUser(){
+    return JSON.parse(JSON.stringify(this.user));
+  }
+
+  // updateUserPicture(parseFile){
+  //   let me = this;
+  //   return new Promise((resolve, reject) => {
+  //     me.user.set("profileImg",parseFile);
+  //     me.user.save(null,{
+  //       success: function(user){
+  //         me.user = user;
+  //         resolve(me.getEditAbleUser());
+  //       },
+  //       error: function(user,error){
+  //         reject(error);
+  //       }
+  //     });
+  //   });
+  // }
+
+  updateUserProfile(data,image){
+    let me = this;
+    return new Promise((resolve, reject) => {
+      me.user.set("name", data.name);
+      me.user.set("email", data.email);
+      if(image){ me.user.set("profileImg",image);}
+      me.user.save(null, {
+        success: function(user){
+          me.user = user;
+          resolve(me.getEditAbleUser());
+        },
+        error: function(user,error){
+          reject(error);
+        }
+      });
+    });
+  }
+
+  getRootPage(): any{
   	if(Parse.User.current().get("type") == "admin"){
     	return OrdersAdminPage;
     }else{
@@ -50,6 +90,7 @@ export class CloudService {
       Parse.User.logIn(username, password, {
         success: function(user) {
           me.user = user;
+          me.events.publish("getUser:event", user);
           resolve(me.getRootPage());
         },
         error: function(user, error) {
@@ -73,8 +114,7 @@ export class CloudService {
         success: function(user) {
           resolve(me.getRootPage());
         },
-        error: function(error) {
-          console.log(error);
+        error: function(user,error) {
           reject(error);
         }
       });

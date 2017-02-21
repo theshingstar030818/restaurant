@@ -7,12 +7,13 @@ import { Page2 } from '../pages/page2/page2';
 
 import {HomePage} from '../pages/home/home';
 import {LoginPage} from '../pages/login/login';
+import {UserPage} from '../pages/user/user';
 import {RegisterPage} from '../pages/register/register';
 import {OrdersAdminPage} from '../pages/orders-admin/orders-admin';
 
 import { CloudService } from '../providers/cloud-service';
 import { ConfigService } from '../providers/config-service';
-
+import { ImageService } from '../providers/image-service';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { ConfigService } from '../providers/config-service';
     HomePage,
     LoginPage,
     RegisterPage,
-    OrdersAdminPage
+    OrdersAdminPage,
+    UserPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -36,12 +38,14 @@ import { ConfigService } from '../providers/config-service';
     HomePage,
     LoginPage,
     RegisterPage,
-    OrdersAdminPage
+    OrdersAdminPage,
+    UserPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     CloudService,
-    ConfigService
+    ConfigService,
+    ImageService
   ]
 })
 export class AppModule {}

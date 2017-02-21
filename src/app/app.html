@@ -4,10 +4,10 @@
     <!-- User profile -->
     <div text-center padding-top padding-bottom class="primary-bg menu-left">
       <a menuClose (click)="viewMyProfile()">
-        <div *ngIf="imageCacheInit&&user?.image?.url">          
-          <img class="profile-picture" src="{{user?.image?.url}}"/>
+        <div>          
+          <img class="profile-picture" src="{{ user?.get('profileImg')?.url() }}"/>
         </div>
-        <h4 color="light">{{user?.username}}</h4>
+        <h4 color="light">{{user?.get("name")}}</h4>
       </a>
     </div>
 

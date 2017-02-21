@@ -5,6 +5,7 @@ import Parse from 'parse';
 
 import {HomePage} from '../pages/home/home';
 import {LoginPage} from '../pages/login/login';
+import {UserPage} from '../pages/user/user';
 
 import { CloudService } from '../providers/cloud-service';
 import { ConfigService } from '../providers/config-service';
@@ -103,6 +104,12 @@ export class MyApp {
     this.nav.setRoot(page.component);
   }
 
+  viewMyProfile() {
+    this.presentLoading();
+    this.nav.push(UserPage, { param1: null });
+    this.dismissLoading();
+  }
+
   initializeEventHandlers(){
     this.initializeGetUserEvent();
     this.initializeToastEvent();
@@ -123,7 +130,7 @@ export class MyApp {
   }
 
   subscribeEvents(){    
-    this.events.subscribe('getUserEvent', this.getUserEvent);
+    this.events.subscribe('getUser:event', this.getUserEvent);
     this.events.subscribe('event:toast', this.toastEvent);
   }
 

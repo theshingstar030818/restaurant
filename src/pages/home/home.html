@@ -5,14 +5,18 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>home</ion-title>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Menu</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 
-<ion-content padding>
+
+<ion-content class="card-background-page">
+
+  <h3 text-center>{{configService.companyName}}</h3>
 
 </ion-content>

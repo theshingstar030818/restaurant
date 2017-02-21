@@ -1,0 +1,71 @@
+<!--
+  Generated template for the ProfilePage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Edit profile</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+  <!-- Cover and profile picture -->
+  <div class="profile-cover">
+    <ion-grid>
+      <ion-row>
+        <ion-col width-33 text-center>
+          <img class="profile-picture circle" src="{{user?.profileImg?.url}}">
+        </ion-col>
+        <ion-col width-66>
+          <h4 padding no-margin color="dark">{{user?.name}}</h4>
+          <button ion-button color="light" round (click)="clickUploadButton()" >Upload Pic</button>
+          <input hidden="true" id="uploadButton" (change)="uploadProfilePic($event)" type="file">
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- User settings -->
+  <ion-list class="list-full-border">
+
+    <ion-item>
+      <ion-label stacked color="primary">Username</ion-label>
+      <ion-input disabled [(ngModel)]="user.username" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked color="primary">Name</ion-label>
+      <ion-input [(ngModel)]="user.name" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked color="primary">Email</ion-label>
+      <ion-input [(ngModel)]="user.email" type="text" ></ion-input>
+    </ion-item>
+
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-grid no-padding>
+    <ion-row class="item-button-group" no-padding>
+      <!-- <ion-col no-padding>
+        <button ion-button block color="gray">
+          Cancel
+        </button>
+      </ion-col> -->
+      <ion-col no-padding>
+        <button ion-button block (click)="saveProfile()">
+          Save
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

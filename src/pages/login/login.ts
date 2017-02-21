@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, MenuController, LoadingController, Events } from 'ionic-angular';
 
 import {ConfigService} from '../../providers/config-service';
-import { CloudService } from '../../providers/cloud-service';
+import {CloudService} from '../../providers/cloud-service';
 
 import {RegisterPage} from "../register/register";
 
