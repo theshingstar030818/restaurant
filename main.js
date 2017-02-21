@@ -16,8 +16,8 @@ Parse.Cloud.define("getMenu", function(request, response) {
 	    menuReturnObject["array"] = menu;
 	    menuArrayToMap(menu).then((map) => {
 	    	menuReturnObject["map"] = map;
-	    	console.log("user : " + request.params.user);
-	    	getAllMenuItems(request.params.user).then((menuItemsObject)=>{
+	    	console.log("user : " + request.user);
+	    	getAllMenuItems(request.user).then((menuItemsObject)=>{
 	    		console.log("response.success");
 	    		menuReturnObject["allMenuItems"] = menuItemsObject;
 	    		response.success(menuReturnObject);

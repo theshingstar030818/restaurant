@@ -222,34 +222,6 @@ export class CloudService {
     });
   }
 
-  getAllMenuItems(user){
-    let me = this;
-    return new Promise((resolve, reject) => {
-      var menuItemsReturnObject = {};
-      var MenuItem = Parse.Object.extend("MenuItem");
-      var menuItemQuery = new Parse.Query(MenuItem);
-      if(user.get("type")!="admin"){menuItemQuery.equalTo("isDeleted", false)}  
-      menuItemQuery.find({
-        success: function(results) {
-          menuItemsReturnObject["array"] = results;
-          menuItemsReturnObject["map"] = me.arrayToMap(results);
-          resolve(menuItemsReturnObject);
-        },
-        error: function(error) {
-          reject(error);
-        }
-      });
-    });
-  }
-
-  arrayToMap(array){
-    var map = {};
-    for (var i = 0; i < array.length; i++) {
-      map[array[i].id] = array[i];
-    }
-    return map;
-  }
-
 }
 
 
@@ -339,10 +311,10 @@ export class CloudService {
 //   });
 // }
 
-function arrayToMap(array){
-  var map = {};
-  for (var i = 0; i < array.length; i++) {
-    map[array[i].id] = array[i];
-  }
-  return map;
-}
+// function arrayToMap(array){
+//   var map = {};
+//   for (var i = 0; i < array.length; i++) {
+//     map[array[i].id] = array[i];
+//   }
+//   return map;
+// }
