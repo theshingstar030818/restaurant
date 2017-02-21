@@ -2,9 +2,9 @@ os:
 - linux
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 env:
-  - NODE_VERSION=6.7.0
+- NODE_VERSION=6.7.0
 addons:
   apt:
     sources:
@@ -15,14 +15,14 @@ addons:
     - lib32stdc++6
     - lib32z1
 before_install:
-- openssl aes-256-cbc -K $encrypted_c74b358449ec_key -iv $encrypted_c74b358449ec_iv
+- openssl aes-256-cbc -K $encrypted_ad7442a841c6_key -iv $encrypted_ad7442a841c6_iv
   -in fbtrb_deploy.enc -out fbtrb_deploy -d
+
 - chmod 600 fbtrb_deploy
 - export LANG=en_US.UTF-8
-
 - scp -r -o StrictHostKeyChecking=no -i fbtrb_deploy main.js root@162.243.118.87:/root/restaurant_app/cloud
-- ssh -o StrictHostKeyChecking=no -i fbtrb_deploy root@162.243.118.87 ' pm2 restart 1; exit;'
-
+- ssh -o StrictHostKeyChecking=no -i fbtrb_deploy root@162.243.118.87 ' pm2 restart
+  1; exit;'
 - nvm install $NODE_VERSION
 - npm install
 - npm install -g gulp bower cordova ionic
@@ -33,9 +33,7 @@ before_script:
 - echo $JAVA_HOME
 - java -version
 - export JAVA_HOME=/usr/lib/jvm/java-8-oracle
-
 script:
-
 - ionic plugin add cordova-plugin-device
 - ionic plugin add cordova-plugin-splashscreen
 - cordova plugin add cordova-plugin-network-information
@@ -46,11 +44,8 @@ script:
 - cordova plugin add cordova-plugin-whitelist
 - cordova plugins
 - ionic resources
-
 - ionic platform add browser
 - ionic build browser
-# - rm platforms/browser/platform_www/cordova.js
-- scp -r -o StrictHostKeyChecking=no -i fbtrb_deploy platforms/browser/* root@162.243.118.87:/var/www/restaurant.tanzeelrana.me/ >/dev/null
-
+- scp -r -o StrictHostKeyChecking=no -i fbtrb_deploy platforms/browser/* root@162.243.118.87:/var/www/restaurant.tanzeelrana.me/
 after_script:
 - rm -rf *
