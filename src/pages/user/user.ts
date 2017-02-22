@@ -69,6 +69,8 @@ export class UserPage {
         me.dismissLoading();
         me.events.publish("event:toast", { message: "Error uploading file", position: "bottom", time:2000});
       });
+    }else{
+      console.error("upload profile pic error");
     }
   }
 

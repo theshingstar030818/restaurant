@@ -17,6 +17,7 @@ import { ItemPage } from '../pages/item/item';
 import { CartPage } from '../pages/cart/cart';
 import { AddItemModal } from '../pages/addItemModal/modal-content';
 import { CartService } from '../providers/cart-service';
+import { CheckoutPage } from '../pages/checkout/checkout';
 
 
 import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
@@ -35,7 +36,8 @@ import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
     CategoryPage,
     ItemPage,
     AddItemModal,
-    CartPage
+    CartPage,
+    CheckoutPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -54,7 +56,8 @@ import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
     CategoryPage,
     ItemPage,
     AddItemModal,
-    CartPage
+    CartPage,
+    CheckoutPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},

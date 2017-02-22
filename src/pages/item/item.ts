@@ -24,6 +24,7 @@ export class ItemPage {
   public images: any;
   public category: any;
   public index: any;
+  public loader: any;
 
   public optionsModels: any;
   public extrasModels: any;
@@ -66,13 +67,13 @@ export class ItemPage {
     item.faved = !item.faved;
   }
 
-  presentLoading() {
-    let loader = this.loadingCtrl.create({
-      content: "Please wait...",
-      dismissOnPageChange: true
-    });
-    loader.present();
-  }
+  // presentLoading() {
+  //   this.loader = this.loadingCtrl.create({
+  //     content: "Please wait...",
+  //     dismissOnPageChange: true
+  //   });
+  //   loader.present();
+  // }
 
   // add item to cart
   addCart(item) {
@@ -82,11 +83,27 @@ export class ItemPage {
       extras: this.extrasModels,
       sizes: this.sizesModels
     };
-    this.presentLoading();
-    this.cartService.add(me.getItemForCart(item,addOns,1));
-    // go to cart
-    this.nav.setRoot(CartPage);
+    // this.presentLoading();
+    this.cartService.add(me.getItemForCart(item,addOns,1)).then((cart)=>{
+      
+      console.log(cart);
+      me.nav.setRoot(CartPage);
+    }).catch((error)=>{
+      console.error(error);
+    });
   }
+
+  // dismissLoading(){
+  //   if(this.loader){
+  //     this.loader.dismiss().then((response) => {
+  //       return response;
+  //     }).then((response) => {
+  //       console.info(response)
+  //     }).catch((error) => {
+  //       console.error(error);
+  //     });
+  //   }
+  // }
 
   outOfStock(item){
     this.presentAlert("Item Out of Stock","",null);
@@ -131,7 +148,7 @@ export class ItemPage {
     var extras = me.addOnsArrayToMap(item.get("extras"));
     var sizes = me.addOnsArrayToMap(item.get("sizes"));
     var finalPrice = item.get("price");
-    cartItem['orignalItem'] = item;
+    cartItem['orignalItem'] = item.toJSON();
     
     for(key in addOns.options){
       if(addOns.options[key]){
@@ -142,18 +159,19 @@ export class ItemPage {
     for(key in addOns.extras){
       if(addOns.extras[key]){
         itemAddOns.extras.push(extras[key]);
-        finalPrice+= parseInt(extras[key].value);
+        finalPrice = parseFloat(finalPrice) + parseFloat(extras[key].value);
       }
     }
     if( typeof addOns.sizes === 'string' ) {
         // input is a string
         itemAddOns.size = sizes[addOns.sizes];
-        finalPrice -= item.get("price");
-        finalPrice += parseInt(sizes[addOns.sizes].value);
+        finalPrice = parseFloat(finalPrice) + parseFloat(item.get("price"));
+        finalPrice = parseFloat(finalPrice) + parseFloat(sizes[addOns.sizes].value);
     }
     cartItem['addOns'] = itemAddOns; 
     cartItem['finalPrice'] = finalPrice; 
     cartItem['quantity'] = quantity;
+    console.log(cartItem);
     return cartItem;
   }
 

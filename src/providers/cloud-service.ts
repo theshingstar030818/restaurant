@@ -26,6 +26,16 @@ export class CloudService {
   public sizes: any = [];
   public find: any;
 
+  private ordersDate: any;
+  private ordersDetails: any;
+
+  private employees: any;
+  
+  public contacts: any;
+  public contactsMap: any;
+  public addresses: any;
+  public addressesMap: any;
+
   constructor(
   	public http: Http,
   	public configService: ConfigService,
@@ -33,14 +43,45 @@ export class CloudService {
     public cartService: CartService,
   ) {
 
+    var now = new Date();
+    this.ordersDate = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toJSON();
+    this.ordersDetails = {};
+    this.employees = [];
+    this.contactsMap = {};
+    this.addressesMap = {};
+
     Parse.initialize('restaurant_app_id');
     Parse.serverURL = 'http://162.243.118.87:1339/parse';
     this.user = Parse.User.current();
 	  configService.init();
+    this.cartService.getCart();
     this.getOptions();
     this.getExtras();
     this.getSizes();
     this.fetchMenu();
+  }
+
+  fetchAllEmployees (){
+    var me =this;
+    var employee = new Parse.Query("Employee");
+    employee.equalTo("isDeleted",false);
+    var me= this;
+    employee.find({
+      success: function(employees) {
+        me.employees = employees;
+      },
+      error: function(error){
+        console.error(error);
+      }
+    })
+  }
+
+  getEmployees(){
+    return this.employees;
+  }
+
+  addEmpoyee(employee){
+    this.employees.push(employee);
   }
 
   getUser(){
@@ -62,7 +103,7 @@ export class CloudService {
     return new Promise((resolve, reject) => {
       me.user.set("name", data.name);
       me.user.set("email", data.email);
-      if(image && image.length==1){ me.user.set("profileImg",image);}
+      if(image){ me.user.set("profileImg",image);}
       me.user.save(null, {
         success: function(user){
           me.user = user;
@@ -337,12 +378,39 @@ export class CloudService {
       });
 
     });
-  }
+  };
+
+  removeRelations(obj,relationName){
+    return new Promise((resolve, reject) => {
+      var relation = obj.relation(relationName);
+      var query = relation.query();
+      query.find({
+        success: function(list) {
+          console.log(list)
+          for(let i=0;i<list.length;i++){
+            relation.remove(list[i]);
+          }
+          obj.save(null, {
+            success:function(){
+              resolve();
+            },
+            error:function(error){
+              reject(error);
+            }
+          });
+        },
+        error:function(list,error){
+          reject(error)
+        }
+      });
+    });
+  };
 
   addItem(addItemModal){
     let me = this;
     return new Promise((resolve, reject) => {
       let item;
+      
       if(addItemModal.data.edit){
         console.log("edit");
         item = addItemModal.data.item;
@@ -351,60 +419,55 @@ export class CloudService {
         let MenuItem = Parse.Object.extend("MenuItem");
         item = new MenuItem();
       }
-      var relation = item.relation("images");
-      if(addItemModal.data.edit){
-        console.log("removing all relations");
-        for (var key in addItemModal.data.item.images.map) {
-          relation.remove(addItemModal.data.item.images.map[key]);
-        }
-      }
-      item.set("name", addItemModal.data.editItem.name);
-      item.set("price", addItemModal.data.editItem.price);
-      item.set("outOfStock", addItemModal.data.editItem.outOfStock);
-      item.set("isDeleted", addItemModal.data.editItem.isDeleted);
-      item.set("description", addItemModal.data.editItem.description);
-      var options = this.getOptionsArray(addItemModal.optionsModels);
-      var extras = this.getArray(addItemModal.extrasModels);
-      var sizes = this.getArray(addItemModal.sizesModels);
-      item.set("options", options);
-      item.set("extras", extras);
-      item.set("sizes", sizes);
-      item.set("category", addItemModal.data.category.object);
-      me.saveFiles(addItemModal.files).then((savedFiles)=>{
-        item.set("mainImage", savedFiles[0]);
-        for(let i=0;i<savedFiles["length"];i++){
-          relation.add(savedFiles[i]);
-        }
-        item.save(null, {
-          success: function(item) {
-            
-            var category = item.get("category");
-
-            me.find = item;
-            var index = me.menu.map[item.get('category').id].items.array.findIndex(function(x) { return x.id == me.find.id; });
-            if(index != -1){
-              me.menu.map[item.get('category').id].items.array[index] = item;
-            }else{
-              me.menu.map[item.get('category').id].items.array.push(item);
-            }
-
-            
-            me.menu.map[item.get('category').id].items.map[item.id] = item;
-            var relation = category.relation("items");
-            relation.add(item);
-            category.save(null, {
-              success: function(category){
-                me.menu.map[category.id].object = category;
-                resolve();
-              },
-              error: function(category,error){
-                reject(error);
-              }
-            });
-          },
-          error: function(item, error) {
-            reject(error);
+      
+      me.removeRelations(item,"images").then(()=>{
+        var relation = item.relation("images");
+        item.set("name", addItemModal.data.editItem.name);
+        item.set("price", addItemModal.data.editItem.price);
+        item.set("outOfStock", addItemModal.data.editItem.outOfStock);
+        item.set("isDeleted", addItemModal.data.editItem.isDeleted);
+        item.set("description", addItemModal.data.editItem.description);
+        var options = this.getOptionsArray(addItemModal.optionsModels);
+        var extras = this.getArray(addItemModal.extrasModels);
+        var sizes = this.getArray(addItemModal.sizesModels);
+        item.set("options", options);
+        item.set("extras", extras);
+        item.set("sizes", sizes);
+        item.set("category", addItemModal.data.category.object);
+        me.saveFiles(addItemModal.files).then((savedFiles)=>{
+          
+          item.set("mainImage", savedFiles[0]);
+          
+          for(let i=0;i<savedFiles["length"];i++){
+            relation.add(savedFiles[i]);
           }
+          item.save(null, {
+            success: function(item) {
+              var category = item.get("category");
+              me.find = item;
+              var index = me.menu.map[item.get('category').id].items.array.findIndex(function(x) { return x.id == me.find.id; });
+              if(index != -1){
+                me.menu.map[item.get('category').id].items.array[index] = item;
+              }else{
+                me.menu.map[item.get('category').id].items.array.push(item);
+              }
+              me.menu.map[item.get('category').id].items.map[item.id] = item;
+              var relation = category.relation("items");
+              relation.add(item);
+              category.save(null, {
+                success: function(category){
+                  me.menu.map[category.id].object = category;
+                  resolve();
+                },
+                error: function(category,error){
+                  reject(error);
+                }
+              });
+            },
+            error: function(item, error) {
+              reject(error);
+            }
+          });
         });
       });
     });

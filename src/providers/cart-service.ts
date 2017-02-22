@@ -55,7 +55,7 @@ export class CartService {
 			    resolve(cart)
 			  },
 			  error: function(cart, error) {
-			    error(error);
+			    reject(error);
 			  }
 			});
 		});
@@ -65,10 +65,14 @@ export class CartService {
 	add(item){
 		let me = this;
 		return new Promise((resolve, reject) => {
-			me.cart.set("items",me.cart.get("items").push(item));
+			var items = me.cart.get("items");
+			items.push(item);
+			me.cart.set("items", items);
 		    me.cart.set("total", me.cart.get("total") + (item.quantity*item.finalPrice));
+		    
 		    me.saveCart().then((cart)=>{
 		    	me.cart=cart;
+		    	resolve(me.cart);
 		    }).catch((error)=>{
 		    	reject(error);
 		    });  
@@ -93,13 +97,15 @@ export class CartService {
 	}
 
 	getCart(){
+		var me = this;
 		return new Promise((resolve, reject) => {
 			var Cart = Parse.Object.extend("Cart");
 			var query = new Parse.Query(Cart);
 			query.equalTo("user", Parse.User.current());
 			query.find({
 			  success: function(cart) {
-			    resolve(cart);
+			    me.cart = cart[0];
+			    resolve(cart[0]);
 			  },
 			  error: function(cart,error) {
 			    reject(error);
