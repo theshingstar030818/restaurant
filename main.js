@@ -30,23 +30,45 @@ Parse.Cloud.define("getMenu", function(request, response) {
 	});
 });
 
-function getAllMenuItems(user){
-  return new Promise((resolve, reject) => {
-    var menuItemsReturnObject = {};
-    var MenuItem = Parse.Object.extend("MenuItem");
-    var menuItemQuery = new Parse.Query(MenuItem);
-    if(user.get("type")!="admin"){menuItemQuery.equalTo("isDeleted", false)}  
-    menuItemQuery.find({
-      success: function(results) {
-        menuItemsReturnObject["array"] = results;
-        menuItemsReturnObject["map"] = arrayToMap(results);
-        resolve(menuItemsReturnObject);
-      },
-      error: function(error) {
-        reject(error);
-      }
+getAllMenuItems(user){
+  
+    var menuItemMap={};
+    var ajaxCallsRemaining;
+    return new Promise((resolve, reject) => {
+      var MenuItem = Parse.Object.extend("MenuItem");
+      var menuItemQuery = new Parse.Query(MenuItem);
+      if(user.get("type")!="admin"){menuItemQuery.equalTo("isDeleted", false)}  
+      menuItemQuery.find({
+        success: function(array) {
+          ajaxCallsRemaining = array.length;
+          for(var i=0;i<array.length;i++){
+            menuItemMap[array[i].id] = {
+              object:array[i],
+              reviews:null,
+              images:null
+            };
+              getRelationObjects(array[i], "reviews").then((reviews) => {
+              menuItemMap[reviews["obj"].id].reviews = reviews["returnObject"];
+              getRelationObjects(reviews["obj"], "images").then((images) => {
+                console.log("getRelationObjects images returnd : " + images);
+                menuItemMap[images["obj"].id].images = images["returnObject"];
+                --ajaxCallsRemaining;
+                console.log("ajaxCallsRemaining : " + ajaxCallsRemaining);
+                if (ajaxCallsRemaining <= 0) {
+                  console.log("resolve menuItemMap");
+                  menuItemMap["array"] = array;
+                  menuItemMap["map"] = arrayToMap(array);
+                  resolve(menuItemMap);
+                }
+              });
+            });
+          }
+        },
+        error: function(error) {
+          reject(error);
+        }
+      });
     });
-  });
 }
 
 function menuArrayToMap(array){

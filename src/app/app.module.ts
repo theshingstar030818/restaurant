@@ -14,7 +14,6 @@ import { OrdersAdminPage } from '../pages/orders-admin/orders-admin';
 import { CategoryPage } from '../pages/category/category';
 import { ImageService } from '../providers/image-service';
 
-
 import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
 
 @NgModule({
@@ -53,4 +52,5 @@ import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
     ImageService
   ]
 })
+
 export class AppModule {}
