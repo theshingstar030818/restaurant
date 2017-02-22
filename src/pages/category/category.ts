@@ -49,7 +49,10 @@ export class CategoryPage {
 
   // view item detail
   viewItem(item, index) {
-    this.navCtrl.push(ItemPage, {item: item})
+    this.cloudService.getCategoryImages(item).then((images)=>{
+      this.navCtrl.push(ItemPage, {item: item, images:images, index:index,category:this.category})
+    });
+    
   }
 
   initializeEventHandlers(){

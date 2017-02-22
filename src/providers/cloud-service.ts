@@ -8,6 +8,7 @@ import Parse from 'parse';
 import { HomePage } from '../pages/home/home';
 import { OrdersAdminPage } from '../pages/orders-admin/orders-admin';
 import { ConfigService } from './config-service';
+import { CartService } from './cart-service';
 
 /*
   Generated class for the CloudService provider.
@@ -29,6 +30,7 @@ export class CloudService {
   	public http: Http,
   	public configService: ConfigService,
     public events: Events,
+    public cartService: CartService,
   ) {
 
     Parse.initialize('restaurant_app_id');
@@ -139,9 +141,14 @@ export class CloudService {
     return new Promise((resolve, reject) => {
       Parse.User.logIn(username, password, {
         success: function(user) {
-          me.user = user;
-          me.events.publish("getUser:event", user);
-          resolve(me.getRootPage());
+          me.cartService.getCart().then((cart)=>{
+            if(!cart || cart["length"]==0){me.cartService.getNewCartCart()}
+              me.user = user;
+              me.events.publish("getUser:event", user);
+              resolve(me.getRootPage());
+          }).catch((error)=>{
+            reject(error);
+          })
         },
         error: function(user, error) {
           reject(error);
@@ -156,10 +163,8 @@ export class CloudService {
       var user = new Parse.User();
       user.set("username", username);
       user.set("password", pass);
-
-      // other fields can be set just like with Parse.Object
+      user.set("cart",me.cartService.getNewCartCart());
       user.set("type", "client");
-
       user.signUp(null, {
         success: function(user) {
           resolve(me.getRootPage());
@@ -531,28 +536,28 @@ export class CloudService {
 // }
 
 
-function getRelationObjects(obj,relationName){
-  return new Promise((resolve, reject) => {
-    var returnObject = {
-      array: null,
-      map: null
-    }; 
-    var relation = obj.relation(relationName);
-    var query = relation.query();
-    query.find({
-      success: function(results){
-        returnObject.array = results;
-        returnObject.map = arrayToMap(results);
-        resolve({returnObject:returnObject, obj:obj});
-      }
-    });
-  });
-}
+// function getRelationObjects(obj,relationName){
+//   return new Promise((resolve, reject) => {
+//     var returnObject = {
+//       array: null,
+//       map: null
+//     }; 
+//     var relation = obj.relation(relationName);
+//     var query = relation.query();
+//     query.find({
+//       success: function(results){
+//         returnObject.array = results;
+//         returnObject.map = arrayToMap(results);
+//         resolve({returnObject:returnObject, obj:obj});
+//       }
+//     });
+//   });
+// }
 
-function arrayToMap(array){
-  var map = {};
-  for (var i = 0; i < array.length; i++) {
-    map[array[i].id] = array[i];
-  }
-  return map;
-}
+// function arrayToMap(array){
+//   var map = {};
+//   for (var i = 0; i < array.length; i++) {
+//     map[array[i].id] = array[i];
+//   }
+//   return map;
+// }
