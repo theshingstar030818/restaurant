@@ -26,11 +26,12 @@ export class CloudService {
   public sizes: any = [];
   public find: any;
 
+  private currentContactIndex: any;
+  private currentAddressIndex: any;
+
   private ordersDate: any;
   private ordersDetails: any;
-
-  private employees: any;
-  
+  private employees: any;  
   public contacts: any;
   public contactsMap: any;
   public addresses: any;
@@ -59,21 +60,17 @@ export class CloudService {
     this.getExtras();
     this.getSizes();
     this.fetchMenu();
-  }
 
-  fetchAllEmployees (){
-    var me =this;
-    var employee = new Parse.Query("Employee");
-    employee.equalTo("isDeleted",false);
-    var me= this;
-    employee.find({
-      success: function(employees) {
-        me.employees = employees;
-      },
-      error: function(error){
-        console.error(error);
-      }
-    })
+    if(this.isAdmin()){
+      this.fetchAllAddresses();
+      this.fetchAllContacts();
+      this.fetchAllOrders(this.ordersDate);
+      this.fetchAllEmployees();
+    }else{
+      this.fetchAddresses(this.user);
+      this.fetchContacts(this.user);
+      this.fetchOrders(this.user);
+    }
   }
 
   getEmployees(){
@@ -96,6 +93,11 @@ export class CloudService {
   getEditAbleObject(obj){
     return JSON.parse(JSON.stringify(obj));
   }
+
+  isAdmin(){
+    return (Parse.User.current().get("type")=="admin");
+  }
+
 
 
   updateUserProfile(data,image){
@@ -245,12 +247,12 @@ export class CloudService {
     });
   }
 
-  getMenuCategory(category){
-     var me = this;
-    return new Promise((resolve, reject) => {
+  // getMenuCategory(category){
+  //    var me = this;
+  //   return new Promise((resolve, reject) => {
 
-    });  
-  }
+  //   });  
+  // }
 
   addMenuCategory(name, images){
     var me = this;
@@ -512,7 +514,7 @@ export class CloudService {
     });
   }
 
-  getCategoryRevews(category){
+  getCategoryReviews(category){
     return new Promise((resolve, reject) => {
       var MenuItem = new Parse.Object("MenuItem");
       var relation = MenuItem.relation("reviews");
@@ -528,6 +530,104 @@ export class CloudService {
     });
   }
 
+  fetchAllAddresses(){
+    console.log("fetchAllAddresses");
+    let me = this;
+    return new Promise((resolve, reject) => {
+      Parse.Cloud.run('fetchAllAddresses').then(function(address) {
+        me.addresses = address.array;
+        me.addressesMap = address.map;
+        me.events.publish('fetchAllAddresses:event', address);
+        resolve(address);
+      });
+    });
+  } 
+
+  fetchAllContacts(){
+    console.log("fetchAllContacts");
+    let me = this;
+    return new Promise((resolve, reject) => {
+      Parse.Cloud.run('fetchAllContacts').then(function(contacts) {
+        me.contacts = contacts.array;
+        me.contactsMap = contacts.map;
+        me.events.publish('fetchAllContacts:event', contacts);
+        resolve(contacts);
+      });
+    });
+  } 
+
+  fetchAllOrders(date){
+
+    console.log("fetchAllOrders");
+    let me = this;
+    return new Promise((resolve, reject) => {
+      Parse.Cloud.run('fetchAllOrders', { date:date } ).then(function(orders) {
+        
+        me.ordersDetails.declinedOrders = orders.ordersDetails.declinedOrders;
+        me.ordersDetails.cancelledByClientOrders = orders.ordersDetails.cancelledByClientOrders;
+        me.ordersDetails.pendingApprovalOrders = orders.ordersDetails.pendingApprovalOrders;
+        me.ordersDetails.inKitchenOrders = orders.ordersDetails.inKitchenOrders;
+        me.ordersDetails.outForDeliveryOrders = orders.ordersDetails.outForDeliveryOrders;
+        me.ordersDetails.completedOrders = orders.ordersDetails.completedOrders;
+        me.user.orders = orders.user.orders;
+        me.user.ordersMap = orders.user.ordersMap;
+
+        me.events.publish('fetchAllOrders:event', orders);
+        resolve(orders);
+      });
+    });
+  } 
+
+  fetchAllEmployees(){
+    console.log("fetchAllEmployees");
+    let me = this;
+    return new Promise((resolve, reject) => {
+      Parse.Cloud.run('fetchAllEmployees').then(function(employees) {
+        me.employees = employees;
+        me.events.publish('fetchAllEmployees:event', employees);
+        resolve(employees);
+      });
+    });
+  } 
+
+  fetchAddresses(user){
+    console.log("fetchAddresses");
+    let me = this;
+    return new Promise((resolve, reject) => {
+      Parse.Cloud.run('fetchAddresses').then(function(addresses) {
+        me.addresses = addresses.array;
+        me.addressesMap = addresses.map;
+        me.events.publish('fetchAddresses:event', addresses);
+        resolve(addresses);
+      });
+    });
+  } 
+
+  fetchContacts(user){
+    console.log("fetchContacts");
+    let me = this;
+    return new Promise((resolve, reject) => {
+      Parse.Cloud.run('fetchContacts').then(function(contacts) {
+        me.contacts = contacts.array;
+        me.contactsMap = contacts.map;
+        me.events.publish('fetchContacts:event', contacts);
+        resolve(contacts);
+      });
+    });
+  } 
+  
+  fetchOrders(user){
+    console.log("fetchOrders");
+    let me = this;
+    return new Promise((resolve, reject) => {
+      Parse.Cloud.run('fetchOrders').then(function(orders) {
+        me.user.orders = orders.array;
+        me.user.ordersMap = orders.map;
+        me.events.publish('fetchOrders:event', orders);
+        resolve(orders);
+      });
+    });
+  } 
 }
 
 
