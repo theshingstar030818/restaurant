@@ -379,7 +379,6 @@ export class CloudService {
             relation.add(item);
             category.save(null, {
               success: function(category){
-
                 me.menu.map[category.id].object = category;
                 resolve();
               },

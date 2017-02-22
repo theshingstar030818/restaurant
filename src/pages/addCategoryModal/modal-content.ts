@@ -43,6 +43,7 @@ export class AddCategoryModal {
         me.dismissLoading();
         me.dismiss();
       }).catch((error)=>{
+        me.dismissLoading();
         me.events.publish("event:toast", { message: error.message, position: "bottom", time:5000});
       });
     }else{
@@ -59,11 +60,11 @@ export class AddCategoryModal {
   }
 
   presentLoading() {
-    let loader = this.loadingCtrl.create({
+  this.loader = this.loadingCtrl.create({
       content: "Please wait...",
       dismissOnPageChange: true
     });
-    loader.present();
+    this.loader.present();
   }
 
   dismiss() {
