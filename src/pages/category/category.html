@@ -30,8 +30,7 @@
 	      <ion-col *ngIf="category?.items?.array[i]" ><div>
 	        <div class="list-items">
 	          <div class="item-menu">
-
-	              <img (click)="viewItem(category.items.array[i])" src="{{configService.companyFiles}}/{{ cloudService?.menu?.allMenuItems[category?.items?.array[i]?.id]?.images?.array[0].get('file').name()}}"/>
+	              <img (click)="viewItem(category?.items?.array[i])" src="{{configService.companyFiles}}/{{ cloudService?.menu?.allMenuItems[category?.items?.array[i]?.id]?.images?.array[0].get('file').name()}}"/>
 
 	              <div class="overlay">
 	                <span class="pull-left" color="light">
@@ -49,7 +48,7 @@
 	        </div>
 	      </ion-col>
 
-	      <!-- <ion-col *ngIf="category?.items?.array[i+1]" ><div>
+	      <ion-col *ngIf="category?.items?.array[i+1]" ><div>
 	        <div class="list-items">
 	          <div class="item-menu">
 
@@ -69,7 +68,7 @@
 	            </div>
 	          </div>
 	        </div>
-	      </ion-col> -->
+	      </ion-col>
 
 	    </ion-row>
 	</div>
