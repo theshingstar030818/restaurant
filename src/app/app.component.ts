@@ -37,7 +37,8 @@ export class MyApp {
     private toastCtrl: ToastController,
     public cloudService: CloudService,
   ) {
-    
+    this.pageConfigs["Orders"]={};
+    this.pageConfigs.Orders["menuButtonsVisibility"] = true;
     this.initializeApp();
     this.initializeEventHandlers();
     this.subscribeEvents();
@@ -54,8 +55,7 @@ export class MyApp {
   }
 
   setPageConfigs(){
-    this.pageConfigs["Orders"]={};
-    this.pageConfigs.Orders["menuButtonsVisibility"] = this.cloudService.isAdmin();
+    this.pageConfigs.Orders["menuButtonsVisibility"] = !this.cloudService.isAdmin();
     console.log(this.pageConfigs)
   }
 
