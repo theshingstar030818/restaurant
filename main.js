@@ -10,6 +10,7 @@ Parse.Cloud.define("getMenu", function(request, response) {
   var menuQuery = new Parse.Query(Menu);
   menuQuery.include("images");
   menuQuery.include("items");
+  menuQuery.include("items.mainImage");
   menuQuery.find({
     success: function(menu) {
       console.log("menu has : " + menu.length + " many items");
@@ -59,7 +60,6 @@ function menuArrayToMap(array){
     
 }
 
-
 function getRelationObjects(obj,relationName){
   console.log("cloud : getRelationObjects for obj : " + obj.id + " relationName : " + relationName);
   return new Promise((resolve, reject) => {
@@ -69,6 +69,7 @@ function getRelationObjects(obj,relationName){
     }; 
     var relation = obj.relation(relationName);
     var query = relation.query();
+    query.include("mainImage");
     query.find({
       success: function(results){
         console.log("getRelationObjects-> relationName: " + relationName  + " total : " + results.length);

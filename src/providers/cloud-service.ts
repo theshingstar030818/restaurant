@@ -419,6 +419,38 @@ export class CloudService {
       return array;
   };
 
+  getCategoryImages(category){
+    return new Promise((resolve, reject) => {
+      var MenuItem = new Parse.Object("MenuItem");
+      var relation = MenuItem.relation("Images");
+      var query = relation.query();
+      query.find({
+        success: function(results){
+           resolve(results)
+        },
+        error: function(Images,error){
+          reject(error);
+        }
+      });
+    });
+  }
+
+  getCategoryRevews(category){
+    return new Promise((resolve, reject) => {
+      var MenuItem = new Parse.Object("MenuItem");
+      var relation = MenuItem.relation("reviews");
+      var query = relation.query();
+      query.find({
+        success: function(results){
+          resolve(results)
+        },
+        error: function(reviews,error){
+          reject(error);
+        }
+      });
+    });
+  }
+
 }
 
 
@@ -490,28 +522,28 @@ export class CloudService {
 // }
 
 
-// function getRelationObjects(obj,relationName){
-//   return new Promise((resolve, reject) => {
-//     var returnObject = {
-//       array: null,
-//       map: null
-//     }; 
-//     var relation = obj.relation(relationName);
-//     var query = relation.query();
-//     query.find({
-//       success: function(results){
-//         returnObject.array = results;
-//         returnObject.map = arrayToMap(results);
-//         resolve({returnObject:returnObject, obj:obj});
-//       }
-//     });
-//   });
-// }
+function getRelationObjects(obj,relationName){
+  return new Promise((resolve, reject) => {
+    var returnObject = {
+      array: null,
+      map: null
+    }; 
+    var relation = obj.relation(relationName);
+    var query = relation.query();
+    query.find({
+      success: function(results){
+        returnObject.array = results;
+        returnObject.map = arrayToMap(results);
+        resolve({returnObject:returnObject, obj:obj});
+      }
+    });
+  });
+}
 
-// function arrayToMap(array){
-//   var map = {};
-//   for (var i = 0; i < array.length; i++) {
-//     map[array[i].id] = array[i];
-//   }
-//   return map;
-// }
+function arrayToMap(array){
+  var map = {};
+  for (var i = 0; i < array.length; i++) {
+    map[array[i].id] = array[i];
+  }
+  return map;
+}
