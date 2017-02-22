@@ -24,9 +24,9 @@
 
   <!-- Item cover -->
   <div class="cover">
-    <ion-slides pager>
-      <ion-slide *ngFor="let img of item?.get('images')">
-        <img class="full-image" src="{{configService.companyFiles}}/{{ img }}" alt=""/>
+    <ion-slides *ngIf="images" pager>
+      <ion-slide *ngFor="let img of images">
+        <img class="full-image" src="{{configService.companyFiles}}/{{ img.get('file').name() }}" alt=""/>
       </ion-slide>
     </ion-slides>
 
@@ -41,7 +41,6 @@
     </div>
   </div>
 
-  <!-- Buttons -->
   <ion-grid no-padding>
     <ion-row class="item-button-group" no-padding>
       
@@ -85,9 +84,8 @@
 </ion-content>
 
 
-<ion-footer [hidden]="!userService?.isAdmin()">
+<ion-footer *ngIf="cloudService?.user.get('type')=='admin'">
   <ion-toolbar>
-    <!-- <p>Ash, Misty, Brock</p> -->
     <ion-buttons end>
       <button [hidden]="item.get('outOfStock')" (click)="DisableItem()" ion-button icon-right color="primary">
         Stock out

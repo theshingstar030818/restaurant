@@ -21,6 +21,9 @@ export class ItemPage {
 
 	public item: any;
   public cart: any;
+  public images: any;
+  public category: any;
+  public index: any;
 
   public optionsModels: any;
   public extrasModels: any;
@@ -41,7 +44,10 @@ export class ItemPage {
   	
   	// get sample data for item
     this.item = navParams.get('item');
-    console.log("showing item page for item: " + this.item);
+    this.images = navParams.get('images');
+    this.index = navParams.get('index');
+    this.category = navParams.get('category');
+    console.log(this.item);
     this.optionsModels = {};
     this.extrasModels = {};
     this.sizesModels = {};
