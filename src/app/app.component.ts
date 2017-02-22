@@ -3,10 +3,16 @@ import { Nav, Platform, Events, ToastController, LoadingController } from 'ionic
 import { StatusBar, Splashscreen} from 'ionic-native';
 import Parse from 'parse';
 
-import {HomePage} from '../pages/home/home';
-import {LoginPage} from '../pages/login/login';
-import {UserPage} from '../pages/user/user';
+import { HomePage } from '../pages/home/home';
+import { LoginPage } from '../pages/login/login';
+import { UserPage } from '../pages/user/user';
 import { CloudService } from '../providers/cloud-service';
+import { OrdersPage } from '../pages/orders/orders';
+import { OrdersAdminPage } from '../pages/orders-admin/orders-admin'
+import { CartPage } from '../pages/cart/cart';
+import { EmployeePage } from '../pages/employee/employee';
+import { AboutPage } from '../pages/about/about';
+
 
 @Component({
   templateUrl: 'app.html'
@@ -18,7 +24,7 @@ export class MyApp {
   loader: any;
   pageConfigs: any = {};
   rootPage: any = LoginPage;
-  pages: Array<{title: string, icon: string, count: any, component: any}>;
+  pages: any;
 
   //page event handlers
   private getUserEvent: (user) => void;
@@ -37,9 +43,20 @@ export class MyApp {
     this.subscribeEvents();
     // used for an example of ngFor and navigation
     this.pages = [
-      {title: 'Menu',icon: 'ios-pizza-outline',count: "home_count",component: HomePage}
+      {title: 'Menu',icon: 'ios-pizza-outline',count: "home_count",component: HomePage},
+      {title: 'My Orders',forAdmin: false,icon: 'ios-list-outline',count: 'orders_count',component: OrdersPage},
+      {title: 'Orders',orAdmin: true,icon: 'ios-list-outline',count: 'orders_count',component: OrdersAdminPage},
+      {title: 'My Cart',icon: 'ios-cart-outline',count: 'cart_count',component: CartPage},
+      {title: 'Employees',icon: 'ios-contacts-outline',count: 'employee_count',component: EmployeePage},
+      {title: 'About us',icon: 'ios-information-circle-outline',count: 'aboutus_count',component: AboutPage}
     ];
+    this.setPageConfigs();
+  }
 
+  setPageConfigs(){
+    this.pageConfigs["Orders"]={};
+    this.pageConfigs.Orders["menuButtonsVisibility"] = this.cloudService.isAdmin();
+    console.log(this.pageConfigs)
   }
 
   logout(){
@@ -116,6 +133,7 @@ export class MyApp {
     let me = this;
     this.getUserEvent = (user) => {
       me.user = user;
+      me.setPageConfigs();
     };
   }
 

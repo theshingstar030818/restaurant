@@ -60,7 +60,6 @@ export class CloudService {
     this.getExtras();
     this.getSizes();
     this.fetchMenu();
-
     if(this.isAdmin()){
       this.fetchAllAddresses();
       this.fetchAllContacts();
@@ -95,7 +94,7 @@ export class CloudService {
   }
 
   isAdmin(){
-    return (Parse.User.current().get("type")=="admin");
+    return (Parse.User.current() && Parse.User.current().get("type")=="admin");
   }
 
 

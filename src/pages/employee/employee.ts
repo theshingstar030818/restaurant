@@ -1,22 +1,120 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import {Component} from '@angular/core';
+import {AlertController, LoadingController} from 'ionic-angular';
+
+import {CloudService} from '../../providers/cloud-service';
+
+
+import {CartPage} from "../cart/cart";
+
+import Parse from 'parse';
 
 /*
-  Generated class for the Employee page.
+ Generated class for the LoginPage page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
+ See http://ionicframework.com/docs/v2/components/#navigation for more info on
+ Ionic pages and navigation.
+ */
 @Component({
-  selector: 'page-employee',
+  selector: 'employee',
   templateUrl: 'employee.html'
 })
 export class EmployeePage {
+  public employees: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad EmployeePage');
+  constructor(
+    public alertController: AlertController, 
+    public loadingCtrl: LoadingController,
+    public cloudService: CloudService
+  ) {
+  	var employee = new Parse.Query("Employee");
+  	employee.equalTo("isDeleted",false);
+  	var me= this;
+  	this.presentLoading();
+    employee.find({
+      success: function(employees) {
+      	me.employees = employees;
+      },
+      error: function(error){
+      	console.error(error);
+      }
+  	})
   }
 
+  presentLoading() {
+    let loader = this.loadingCtrl.create({
+      content: "Please wait...",
+      dismissOnPageChange: true
+    });
+    loader.present();
+  }
+
+
+  addEmployee(){
+  	var me = this;
+    this.presentAlert("Add Employee","Please enter all fields to a an employee",function(data){
+    	var Employee = Parse.Object.extend("Employee");
+		var employee = new Employee();
+		employee.set("name",data.name);
+		employee.set("email", data.email);
+		employee.set("phone",data.phone);
+		employee.set("isDeleted",false);
+		employee.save(null, {
+			success: function(employee){
+				me.employees.push(employee);
+        me.cloudService.addEmpoyee(employee);
+			},
+			error: function(employee,error){
+				console.error(error.message);
+			}
+		})
+    });
+  }
+
+  presentAlert(title,message,call) {
+    let alert = this.alertController.create({
+      title: title,
+      subTitle: message,
+      inputs: [
+        {
+          name: 'name',
+          value: '',
+          type: "name",
+          placeholder: 'Name',
+          label: 'Name'
+        },
+        {
+          name: 'email',
+          value: '',
+          type: "email",
+          placeholder: 'Email',
+          label: 'Email'
+        },
+        {
+          name: 'phone',
+          value: '',
+          type: "tel",
+          placeholder: 'phone #',
+          label: 'phone #'
+        },
+      ],
+      buttons: [
+        {
+          text: 'OK',
+          handler: data => {
+            if(call){
+              call(data);
+            }
+          }
+        },
+        {
+          text: 'Cancel',
+          handler: data => {
+            
+          }
+        }
+      ]
+    });
+    alert.present();
+  } 
+  
 }

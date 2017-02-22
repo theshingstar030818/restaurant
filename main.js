@@ -108,7 +108,7 @@
   Parse.Cloud.define("fetchAllEmployees", function(request, response) {
     fetchAllContacts().then((employees)=>{
       response.success(employees);
-    }).cathc((error)=>{
+    }).catch((error)=>{
       response.error(error);
     });
   });
@@ -138,7 +138,7 @@
   Parse.Cloud.define("fetchAllContacts", function(request, response) {
     fetchAllContacts().then((contacts)=>{
       response.success(contacts);
-    }).cathc((error)=>{
+    }).catch((error)=>{
       response.error(error);
     });
   });
@@ -168,12 +168,12 @@
   Parse.Cloud.define("fetchAllAddresses", function(request, response) {
     fetchAllAddresses().then((addresses)=>{
       response.success(addresses);
-    }).cathc((error)=>{
+    }).catch((error)=>{
       response.error(error);
     });
   });
 
-  fetchAllOrders (ordersDate){
+  function fetchAllOrders (ordersDate){
     return new Promise((resolve, reject) => {  
       var me = {};
       var order = new Parse.Query("Orders");
@@ -228,19 +228,19 @@
     });
   }
 
-  getDayStartDateObj(date){
+  function getDayStartDateObj(date){
     var d = new Date ( date.getTime() + (date.getTimezoneOffset() * 60000));
     d.setHours(0, 0, 0, 0);
     return d;
   }
 
-  getDayEndDateObj(date){
+  function getDayEndDateObj(date){
     var d = new Date ( date.getTime() + (date.getTimezoneOffset() * 60000));
     d.setHours(23, 59, 59, 999);
     return d;
   }
 
-  sortOrdersByTimeEarliestFirst(a, b) {
+  function sortOrdersByTimeEarliestFirst(a, b) {
     var aTime = new Date(a.createdAt).getTime();
     var bTime = new Date(b.createdAt).getTime();
     return bTime - aTime;
@@ -249,12 +249,12 @@
   Parse.Cloud.define("fetchAllOrders", function(request, response) {
     fetchAllOrders(request.params.date).then((orders)=>{
       response.success(orders);
-    }).cathc((error)=>{
+    }).catch((error)=>{
       response.error(error);
     });
   });
 
-  fetchOrders(parseUser){
+  function fetchOrders(parseUser){
     return new Promise((resolve, reject) => {  
       var me = {};
       var order = new Parse.Query("User_Order_");
@@ -284,12 +284,12 @@
   Parse.Cloud.define("fetchOrders", function(request, response) {
     fetchOrders(request.user).then((orders)=>{
       response.success(orders);
-    }).cathc((error)=>{
+    }).catch((error)=>{
       response.error(error);
     });
   }); 
 
-  fetchContacts(parseUser){
+  function fetchContacts(parseUser){
     return new Promise((resolve, reject) => {    
       var me = {};
       var contact = new Parse.Query("User_Contact_");
@@ -299,8 +299,7 @@
         success: function(results) {
           console.log("contacts fetched : " + results);
           me["user"].contacts = [];
-          f
-          or(var i=0; i<results.length; i++){
+          for(var i=0; i<results.length; i++){
             me.user.contacts.push(JSON.parse(JSON.stringify(results[i].get("contact")))) 
           }
           resolve(me);
@@ -315,12 +314,12 @@
   Parse.Cloud.define("fetchContacts", function(request, response) {
     fetchOrders(request.user).then((contacts)=>{
       response.success(contacts);
-    }).cathc((error)=>{
+    }).catch((error)=>{
       response.error(error);
     });
   }); 
 
-  fetchAddresses(parseUser){
+  function fetchAddresses(parseUser){
     return new Promise((resolve, reject) => {
       var me = {};
       var address = new Parse.Query("User_Address_");
@@ -341,3 +340,11 @@
       });
     });
   }
+
+  Parse.Cloud.define("fetchAddresses", function(request, response) {
+    fetchOrders(request.user).then((address)=>{
+      response.success(address);
+    }).catch((error)=>{
+      response.error(error);
+    });
+  }); 
