@@ -35,17 +35,16 @@ export class AddItemModal {
     this.data.editItem = {};
     if(this.data.edit){
       this.data.editItem = cloudService.getEditAbleObject(this.data.item);
-      this.data.item = cloudService.menu.allMenuItems[this.data.item.id];
-      this.files = this.data.item.images.array;
+      this.files = this.data.item.images;
       
-      for(var i=0; i<this.data.item.object.get("options").length; i++){
-        this.optionsModels[this.data.item.object.get("options")[i].name] = this.data.item.object.get("options")[i].value;
+      for(var i=0; i<this.data.item.get("options").length; i++){
+        this.optionsModels[this.data.item.get("options")[i].name] = this.data.item.get("options")[i].value;
       }
-      for(var i=0; i<this.data.item.object.get("extras").length; i++){
-        this.extrasModels[this.data.item.object.get("extras")[i].name] = this.data.item.object.get("extras")[i].value;
+      for(var i=0; i<this.data.item.get("extras").length; i++){
+        this.extrasModels[this.data.item.get("extras")[i].name] = this.data.item.get("extras")[i].value;
       }
-      for(var i=0; i<this.data.item.object.get("sizes").length; i++){
-        this.sizesModels[this.data.item.object.get("sizes")[i].name] = this.data.item.object.get("sizes")[i].value;
+      for(var i=0; i<this.data.item.get("sizes").length; i++){
+        this.sizesModels[this.data.item.get("sizes")[i].name] = this.data.item.get("sizes")[i].value;
       }
     }
   }

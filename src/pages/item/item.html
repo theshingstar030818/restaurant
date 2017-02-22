@@ -44,20 +44,7 @@
   <!-- Buttons -->
   <ion-grid no-padding>
     <ion-row class="item-button-group" no-padding>
-      <!-- <ion-col no-padding>
-        <button ion-button block (click)="toggleFav(item)" color="gray">
-          <ion-icon class="text-2x" name="ios-star" [hidden]="!item.faved"></ion-icon>
-          <ion-icon class="text-2x" name="ios-star-outline" [hidden]="item.faved"></ion-icon>
-          <span class="text-sm">ADD TO FAVORITE</span>
-        </button>
-      </ion-col> -->
-      <!-- <ion-col no-padding>
-        <button ion-button block (click)="toggleFav(item)" color="gray">
-          <ion-icon class="text-2x" name="ios-star" [hidden]="!item.faved"></ion-icon>
-          <ion-icon class="text-2x" name="ios-star-outline" [hidden]="item.faved"></ion-icon>
-          <span class="text-sm">ADD TO FAVORITE</span>
-        </button>
-      </ion-col> -->
+      
       <ion-col no-padding [hidden]="!item.get('outOfStock')">
         <button color="gray" ion-button block (click)="outOfStock(item)">
           <ion-icon class="text-2x" name="ios-sad-outline"></ion-icon>

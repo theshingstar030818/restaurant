@@ -15,6 +15,7 @@ import { CategoryPage } from '../pages/category/category';
 import { ImageService } from '../providers/image-service';
 import { ItemPage } from '../pages/item/item';
 import { AddItemModal } from '../pages/addItemModal/modal-content';
+import { CartService } from '../providers/cart-service';
 
 
 import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
@@ -56,7 +57,8 @@ import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     CloudService,
     ConfigService,
-    ImageService
+    ImageService,
+    CartService
   ]
 })
 

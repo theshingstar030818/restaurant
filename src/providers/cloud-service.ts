@@ -23,6 +23,7 @@ export class CloudService {
   public options: any = [];
   public extras: any = [];
   public sizes: any = [];
+  public find: any;
 
   constructor(
   	public http: Http,
@@ -339,7 +340,7 @@ export class CloudService {
       let item;
       if(addItemModal.data.edit){
         console.log("edit");
-        item = addItemModal.data.item.object;
+        item = addItemModal.data.item;
       }else{
         console.log("new");
         let MenuItem = Parse.Object.extend("MenuItem");
@@ -356,7 +357,7 @@ export class CloudService {
       item.set("price", addItemModal.data.editItem.price);
       item.set("outOfStock", addItemModal.data.editItem.outOfStock);
       item.set("isDeleted", addItemModal.data.editItem.isDeleted);
-      item.set("description", addItemModal.description);
+      item.set("description", addItemModal.data.editItem.description);
       var options = this.getOptionsArray(addItemModal.optionsModels);
       var extras = this.getArray(addItemModal.extrasModels);
       var sizes = this.getArray(addItemModal.sizesModels);
@@ -373,8 +374,17 @@ export class CloudService {
           success: function(item) {
             
             var category = item.get("category");
-            me.menu.map[category.id].items.array.push(item);
-            me.menu.map[category.id].items.map[item.id] = item;
+
+            me.find = item;
+            var index = me.menu.map[item.get('category').id].items.array.findIndex(function(x) { return x.id == me.find.id; });
+            if(index != -1){
+              me.menu.map[item.get('category').id].items.array[index] = item;
+            }else{
+              me.menu.map[item.get('category').id].items.array.push(item);
+            }
+
+            
+            me.menu.map[item.get('category').id].items.map[item.id] = item;
             var relation = category.relation("items");
             relation.add(item);
             category.save(null, {
@@ -421,8 +431,7 @@ export class CloudService {
 
   getCategoryImages(category){
     return new Promise((resolve, reject) => {
-      var MenuItem = new Parse.Object("MenuItem");
-      var relation = MenuItem.relation("Images");
+      var relation = category.relation("images");
       var query = relation.query();
       query.find({
         success: function(results){

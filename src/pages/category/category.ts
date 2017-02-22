@@ -48,8 +48,8 @@ export class CategoryPage {
   }
 
   // view item detail
-  viewItem(id) {
-    this.navCtrl.push(ItemPage, {id: id})
+  viewItem(item, index) {
+    this.navCtrl.push(ItemPage, {item: item})
   }
 
   initializeEventHandlers(){
@@ -83,9 +83,12 @@ export class CategoryPage {
     modal.present();
   }
 
-  editItem(item){
-    let modal = this.modalCtrl.create(AddItemModal, {edit:true, item: item, category: this.category});
-    modal.present();
+  editItem(item, index){
+    this.cloudService.getCategoryImages(item).then((images)=>{
+      item["images"] = images;
+      let modal = this.modalCtrl.create(AddItemModal, {edit:true, item: item, category: this.category});
+      modal.present();
+    });
   }
   
 

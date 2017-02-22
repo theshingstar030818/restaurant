@@ -3,6 +3,7 @@ import { NavController, NavParams, AlertController, LoadingController } from 'io
 
 import {CloudService} from '../../providers/cloud-service';
 import {ConfigService} from '../../providers/config-service';
+import {CartService} from '../../providers/cart-service';
 
 /*
   Generated class for the Item page.
@@ -22,7 +23,6 @@ export class ItemPage {
   public optionsModels: any;
   public extrasModels: any;
   public sizesModels: any;
-
   public showOptions: boolean;
   public showExtras: boolean;
   public showSizes: boolean;
@@ -31,10 +31,11 @@ export class ItemPage {
   	private navParams: NavParams,
     public nav: NavController, 
     public alertController: AlertController, 
+    public cartService: CartService,
     public configService: ConfigService,
     public loadingCtrl: LoadingController
   ) {
-
+  	
   	// get sample data for item
     let item = navParams.get('item');
     console.log("showing item page for item: " + item);

@@ -30,7 +30,7 @@
 	      <ion-col *ngIf="category?.items?.array[i]" ><div>
 	        <div class="list-items">
 	          <div class="item-menu">
-	              <img (click)="viewItem(category?.items?.array[i])" src="{{configService.companyFiles}}/{{ category?.items?.array[i]?.get('mainImage')?.get('file').name()}}"/>
+	              <img (click)="viewItem(category?.items?.array[i],i)" src="{{configService.companyFiles}}/{{ category?.items?.array[i]?.get('mainImage')?.get('file').name()}}"/>
 
 	              <div class="overlay">
 	                <span class="pull-left" color="light">
@@ -38,7 +38,7 @@
 	                </span>
 	              </div>
 
-	              <div *ngIf="cloudService?.user?.get('type')=='admin'" class="edit-button" (click)="editItem(category.items.array[i])">
+	              <div *ngIf="cloudService?.user?.get('type')=='admin'" class="edit-button" (click)="editItem(category.items.array[i],i)">
 	                <button ion-button color="light" round>
 	                  <ion-icon name="md-create"></ion-icon>
 	                </button>
@@ -52,7 +52,7 @@
 	        <div class="list-items">
 	          <div class="item-menu">
 
-	              <img (click)="viewItem(category.items.array[i+1])" src="{{configService.companyFiles}}/{{ category?.items?.array[i+1]?.get('mainImage')?.get('file').name()}}"/>
+	              <img (click)="viewItem(category?.items?.array[i+1],i+1)" src="{{configService?.companyFiles}}/{{ category?.items?.array[i+1]?.get('mainImage')?.get('file').name()}}"/>
 
 	              <div class="overlay">
 	                <span class="pull-left" color="light">
@@ -60,7 +60,7 @@
 	                </span>
 	              </div>
 
-	              <div *ngIf="cloudService?.user?.get('type')=='admin'" class="edit-button" (click)="editItem(category.items.array[i+1])">
+	              <div *ngIf="cloudService?.user?.get('type')=='admin'" class="edit-button" (click)="editItem(category.items.array[i+1],i+1)">
 	                <button ion-button color="light" round>
 	                  <ion-icon name="md-create"></ion-icon>
 	                </button>
