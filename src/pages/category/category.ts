@@ -52,7 +52,6 @@ export class CategoryPage {
     this.cloudService.getCategoryImages(item).then((images)=>{
       this.navCtrl.push(ItemPage, {item: item, images:images, index:index,category:this.category})
     });
-    
   }
 
   initializeEventHandlers(){
