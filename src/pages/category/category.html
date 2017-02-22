@@ -27,19 +27,19 @@
 
 	<div *ngFor="let item of category?.items?.array; let i = index">
 	    <ion-row *ngIf="i%2==0">
-	      <ion-col *ngIf="category.items.array[i]" ><div>
+	      <ion-col *ngIf="category?.items?.array[i]&&cloudService?.menu?.allMenuItems" ><div>
 	        <div class="list-items">
 	          <div class="item-menu">
 
-	              <img (click)="viewItem(category.items.array[i].id)" src="{{ menu.allMenuItems.map[category.items.arrau[i]?.id] }}" alt="{{ category.items.array[i]?.get('name') }}"/>
+	              <img (click)="viewItem(category.items.array[i])" src="{{configService.companyFiles}}/{{ cloudService?.menu?.allMenuItems[category?.items?.array[i]?.id]?.images?.array[0].get('file').name()}}"/>
 
 	              <div class="overlay">
 	                <span class="pull-left" color="light">
-	                  {{ category.items.array[i]?.get('name') }} - ${{ category.items.array[i]?.get("price") }}
+	                  {{ category?.items?.array[i]?.get('name') }} - ${{ category?.items?.array[i]?.get("price") }}
 	                </span>
 	              </div>
 
-	              <div *ngIf="cloudService.user?.get('type')=='admin'" class="edit-button" (click)="editItem(i)">
+	              <div *ngIf="cloudService?.user?.get('type')=='admin'" class="edit-button" (click)="editItem(category.items.array[i])">
 	                <button ion-button color="light" round>
 	                  <ion-icon name="md-create"></ion-icon>
 	                </button>
@@ -49,19 +49,19 @@
 	        </div>
 	      </ion-col>
 
-	      <ion-col *ngIf="category.items.array[i+1]" ><div>
+	      <ion-col *ngIf="category?.items?.array[i+1]&&cloudService?.menu?.allMenuItems" ><div>
 	        <div class="list-items">
 	          <div class="item-menu">
 
-	              <img (click)="viewItem(category.items.array[i+1].id)" src="{{ category.items[i+1]?.get('thumb').url() }}" alt="{{ category.items.array[i+1]?.get('name') }}"/>
+	              <img (click)="viewItem(category.items.array[i+1])" src="{{configService.companyFiles}}/{{ cloudService?.menu?.allMenuItems[category?.items?.array[i+1]?.id]?.images?.array[0].get('file').name()}}"/>
 
 	              <div class="overlay">
 	                <span class="pull-left" color="light">
-	                  {{ category.items.array[i+1]?.get('name') }} - ${{ category.items.array[i+1]?.get("price") }}
+	                  {{ category?.items?.array[i]?.get('name') }} - ${{ category?.items?.array[i+1]?.get("price") }}
 	                </span>
 	              </div>
 
-	              <div *ngIf="cloudService.user?.get('type')=='admin'" class="edit-button" (click)="editItem(i)">
+	              <div *ngIf="cloudService?.user?.get('type')=='admin'" class="edit-button" (click)="editItem(category.items.array[i+1])">
 	                <button ion-button color="light" round>
 	                  <ion-icon name="md-create"></ion-icon>
 	                </button>
@@ -75,3 +75,16 @@
 	</div>
 
 </ion-content>
+
+
+<ion-footer *ngIf="cloudService?.user?.get('type')=='admin'">
+  <ion-toolbar>
+    <!-- <p>Ash, Misty, Brock</p> -->
+    <ion-buttons end>
+      <button (click)="openModal({category: 0})" ion-button icon-right color="royal">
+        Add
+        <ion-icon name="md-add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

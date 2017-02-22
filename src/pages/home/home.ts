@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, Events, ModalController } from 'ionic-angular';
+import { NavController, NavParams, Events, ModalController, LoadingController} from 'ionic-angular';
 
 import {CloudService} from '../../providers/cloud-service';
 import {ConfigService} from '../../providers/config-service';
@@ -19,6 +19,7 @@ import {AddCategoryModal} from '../addCategoryModal/modal-content';
 export class HomePage {
 
 	menu: any;
+  loader: any;
 
 	//page event handlers
 	private fetchMenuEvent: (menu) => void;
@@ -30,8 +31,13 @@ export class HomePage {
   	public events: Events,
   	public cloudService: CloudService,
   	public modalCtrl: ModalController,
+    public loadingCtrl: LoadingController,
   ) {
-
+    if(!this.menu){
+      this.presentLoading();
+      cloudService.fetchMenu();
+      this.dismissLoading();
+    }
   }
 
   openModal() {
@@ -81,6 +87,26 @@ export class HomePage {
 
   viewCategory(category) {
     this.navCtrl.push(CategoryPage, {category: category});
+  }
+
+  presentLoading() {
+    let loader = this.loadingCtrl.create({
+      content: "Please wait..."
+    });
+    this.loader = loader;
+    loader.present();
+  }
+
+  dismissLoading(){
+    if(this.loader){
+      this.loader.dismiss().then((response) => {
+        return response;
+      }).then((response) => {
+        console.info(response)
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
 }

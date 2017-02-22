@@ -59,15 +59,17 @@ export class UserPage {
   }
 
   uploadProfilePic(fileInput: any){
-  	let me = this;
-  	me.presentLoading();
-  	me.imageService.getParseFileBase64(fileInput).then((parseFileBase64) => {
-  		me.dismissLoading();
-      me.saveProfile(parseFileBase64);
-  	}).catch((error) => {
-  		me.dismissLoading();
-  		me.events.publish("event:toast", { message: "Error uploading file", position: "bottom", time:2000});
-  	});
+    if(fileInput.target.files.length==1){
+      let me = this;
+      me.presentLoading();
+      me.imageService.getParseFileBase64(fileInput).then((parseFileBase64) => {
+        me.dismissLoading();
+        me.saveProfile(parseFileBase64);
+      }).catch((error) => {
+        me.dismissLoading();
+        me.events.publish("event:toast", { message: "Error uploading file", position: "bottom", time:2000});
+      });
+    }
   }
 
   saveProfile(image){

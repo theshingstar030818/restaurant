@@ -43,28 +43,17 @@ export class CloudService {
     return JSON.parse(JSON.stringify(this.user));
   }
 
-  // updateUserPicture(parseFile){
-  //   let me = this;
-  //   return new Promise((resolve, reject) => {
-  //     me.user.set("profileImg",parseFile);
-  //     me.user.save(null,{
-  //       success: function(user){
-  //         me.user = user;
-  //         resolve(me.getEditAbleUser());
-  //       },
-  //       error: function(user,error){
-  //         reject(error);
-  //       }
-  //     });
-  //   });
-  // }
+  getEditAbleObject(obj){
+    return JSON.parse(JSON.stringify(obj));
+  }
+
 
   updateUserProfile(data,image){
     let me = this;
     return new Promise((resolve, reject) => {
       me.user.set("name", data.name);
       me.user.set("email", data.email);
-      if(image){ me.user.set("profileImg",image);}
+      if(image && image.length==1){ me.user.set("profileImg",image);}
       me.user.save(null, {
         success: function(user){
           me.user = user;
@@ -83,12 +72,19 @@ export class CloudService {
     let savedFiles = [];
     return new Promise((resolve, reject) => {
       for(let i=0;i<filesCount;i++){
-        me.saveFile(files[i]).then((file) => {
-          savedFiles.push(file);
+        if(!files[i].id){
+          me.saveFile(files[i]).then((file) => {
+            savedFiles.push(file);
+            if(savedFiles.length == filesCount){
+              resolve(savedFiles);
+            }
+          });
+        }else{
+          savedFiles.push(files[i]);
           if(savedFiles.length == filesCount){
-            resolve(savedFiles);
+              resolve(savedFiles);
           }
-        });
+        }
       }
     });
   }
@@ -166,11 +162,13 @@ export class CloudService {
       });
   }
 
+
   getMenu(){
     return this.menu;
   }
 
   fetchMenu(){
+    console.log("fetchMenu");
     let me = this;
     return new Promise((resolve, reject) => {
       Parse.Cloud.run('getMenu').then(function(menu) {
@@ -179,6 +177,13 @@ export class CloudService {
         resolve(me.menu);
       });
     });
+  }
+
+  getMenuCategory(category){
+     var me = this;
+    return new Promise((resolve, reject) => {
+
+    });  
   }
 
   addMenuCategory(name, images){
@@ -221,6 +226,150 @@ export class CloudService {
       });
     });
   }
+
+  addNewOption(option_name){
+    var me = this;
+    return new Promise((resolve, reject) => {
+      var Option = Parse.Object.extend("Option");
+      var option = new Option();
+      option.set("name", option_name);
+      option.save(null, {
+        success: function(option) {
+          me.menu.options.push(option);
+          resolve(option);
+        },
+        error: function(option, error) {
+          reject(error);
+        }
+      });
+
+    });
+  }
+
+  addNewExtra(extra_name){
+    var me = this;
+    return new Promise((resolve, reject) => {
+      var Extra = Parse.Object.extend("Extra");
+      var extra = new Extra();
+
+      extra.set("name", extra_name);
+
+      extra.save(null, {
+        success: function(extra) {
+          me.menu.extras.push(extra);
+          resolve(extra);
+        },
+        error: function(extra, error) {
+          reject(error);
+        }
+      });
+
+    });
+  }
+
+  addNewSize(size_name){
+    var me = this;
+    return new Promise((resolve, reject) => {
+      var Size = Parse.Object.extend("Size");
+      var size = new Size();
+
+      size.set("name", size_name);
+
+      size.save(null, {
+        success: function(size) {
+          me.menu.sizes.push(size);
+          resolve(size);
+        },
+        error: function(size, error) {
+          reject(error);
+        }
+      });
+
+    });
+  }
+
+  addItem(addItemModal){
+    let me = this;
+    return new Promise((resolve, reject) => {
+      let item;
+      if(addItemModal.data.edit){
+        console.log("edit");
+        item = addItemModal.data.item.object;
+      }else{
+        console.log("new");
+        let MenuItem = Parse.Object.extend("MenuItem");
+        item = new MenuItem();
+      }
+      var relation = item.relation("images");
+      if(addItemModal.data.edit){
+        console.log("removing all relations");
+        for (var key in addItemModal.data.item.images.map) {
+          relation.remove(addItemModal.data.item.images.map[key]);
+        }
+      }
+      item.set("name", addItemModal.data.editItem.name);
+      item.set("price", addItemModal.data.editItem.price);
+      item.set("outOfStock", addItemModal.data.editItem.outOfStock);
+      item.set("isDeleted", addItemModal.data.editItem.isDeleted);
+      item.set("description", addItemModal.description);
+      var options = this.getOptionsArray(addItemModal.optionsModels);
+      var extras = this.getArray(addItemModal.extrasModels);
+      var sizes = this.getArray(addItemModal.sizesModels);
+      item.set("options", options);
+      item.set("extras", extras);
+      item.set("sizes", sizes);
+      item.set("category", addItemModal.data.category.object);
+      me.saveFiles(addItemModal.files).then((savedFiles)=>{
+        for(let i=0;i<savedFiles["length"];i++){
+          relation.add(savedFiles[i]);
+        }
+        item.save(null, {
+          success: function(item) {
+            var category = item.get("category");
+            var relation = category.relation("items");
+            relation.add(item);
+            category.save(null, {
+              success: function(category){
+                me.fetchMenu().then((menu)=>{
+                  resolve(menu);
+                });
+              },
+              error: function(category,error){
+                reject(error);
+              }
+            });
+          },
+          error: function(item, error) {
+            reject(error);
+          }
+        });
+      });
+    });
+  }
+
+  getOptionsArray(obj){
+    var array = [], key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)){
+          if(obj[key]){
+            array.push({name: key, value: obj[key]});
+          }
+        }
+    }
+    return array;
+  }
+
+  getArray(obj) {
+      var array = [], key;
+      for (key in obj) {
+          if (obj.hasOwnProperty(key)){
+            if(obj[key].length>0){
+              array.push({name: key, value: obj[key]});
+            }
+          }
+      }
+      return array;
+  };
 
 }
 

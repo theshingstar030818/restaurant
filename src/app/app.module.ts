@@ -13,6 +13,9 @@ import { ConfigService } from '../providers/config-service';
 import { OrdersAdminPage } from '../pages/orders-admin/orders-admin';
 import { CategoryPage } from '../pages/category/category';
 import { ImageService } from '../providers/image-service';
+import { ItemPage } from '../pages/item/item';
+import { AddItemModal } from '../pages/addItemModal/modal-content';
+
 
 import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
 
@@ -27,7 +30,9 @@ import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
     UserPage,
     OrdersAdminPage,
     AddCategoryModal,
-    CategoryPage
+    CategoryPage,
+    ItemPage,
+    AddItemModal
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -43,7 +48,9 @@ import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
     UserPage,
     OrdersAdminPage,
     AddCategoryModal,
-    CategoryPage
+    CategoryPage,
+    ItemPage,
+    AddItemModal
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},

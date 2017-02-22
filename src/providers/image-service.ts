@@ -35,7 +35,7 @@ export class ImageService {
 			  }
 			  reader.readAsDataURL(fileInput.target.files[0]);
 		}else{
-			reject({message:"Only one file allowed"});
+			resolve([]);
 		}
 	});
   }
@@ -65,7 +65,7 @@ export class ImageService {
 			}
 
 		}else{
-			reject({message:"No file(s) selected"});
+			resolve([]);
 		}
 	});
   }
