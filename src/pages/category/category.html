@@ -27,7 +27,7 @@
 
 	<div *ngFor="let item of category?.items?.array; let i = index">
 	    <ion-row *ngIf="i%2==0">
-	      <ion-col *ngIf="category?.items?.array[i]&&cloudService?.menu?.allMenuItems" ><div>
+	      <ion-col *ngIf="category?.items?.array[i]" ><div>
 	        <div class="list-items">
 	          <div class="item-menu">
 
@@ -49,7 +49,7 @@
 	        </div>
 	      </ion-col>
 
-	      <ion-col *ngIf="category?.items?.array[i+1]&&cloudService?.menu?.allMenuItems" ><div>
+	      <!-- <ion-col *ngIf="category?.items?.array[i+1]" ><div>
 	        <div class="list-items">
 	          <div class="item-menu">
 
@@ -69,7 +69,7 @@
 	            </div>
 	          </div>
 	        </div>
-	      </ion-col>
+	      </ion-col> -->
 
 	    </ion-row>
 	</div>

@@ -37,6 +37,7 @@ export class AddItemModal {
       this.data.editItem = cloudService.getEditAbleObject(this.data.item);
       this.data.item = cloudService.menu.allMenuItems[this.data.item.id];
       this.files = this.data.item.images.array;
+      
       for(var i=0; i<this.data.item.object.get("options").length; i++){
         this.optionsModels[this.data.item.object.get("options")[i].name] = this.data.item.object.get("options")[i].value;
       }

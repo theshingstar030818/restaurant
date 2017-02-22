@@ -101,7 +101,7 @@
         <ion-label>Options</ion-label>
         <button (click)="addNewOption()" ion-button color="light" round item-right icon-left>New Option</button>
       </ion-item-divider>
-      <ion-item *ngFor="let option of cloudService?.menu?.options">
+      <ion-item *ngFor="let option of cloudService?.options">
         <ion-label>{{ option?.get('name') }}</ion-label>
         <ion-checkbox [(ngModel)]="optionsModels[option?.get('name')]" color="primary"></ion-checkbox>
       </ion-item>
@@ -110,7 +110,7 @@
         <ion-label>Extras</ion-label>
         <button (click)="addNewExtra()" ion-button color="light" round item-right icon-left>New Extra</button>
       </ion-item-divider>
-      <ion-item *ngFor="let extra of cloudService?.menu?.extras">
+      <ion-item *ngFor="let extra of cloudService?.extras">
         <ion-label>{{ extra?.get('name') }} {{configService.currency.sign}}</ion-label>
         <ion-input [(ngModel)]="extrasModels[extra?.get('name')]" type="number" placeholder="Enter cost"></ion-input>
       </ion-item>
@@ -119,7 +119,7 @@
         <ion-label>Sizes</ion-label>
         <button (click)="addNewSize()" ion-button color="light" round item-right icon-left>New Size</button>
       </ion-item-divider>
-      <ion-item *ngFor="let size of cloudService?.menu?.sizes">
+      <ion-item *ngFor="let size of cloudService?.sizes">
         <ion-label>{{ size?.get('name') }} {{configService.currency.sign}}</ion-label>
         <ion-input [(ngModel)]="sizesModels[size?.get('name')]" type="number" placeholder="Enter cost"></ion-input>
       </ion-item>

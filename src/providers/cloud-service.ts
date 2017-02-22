@@ -20,6 +20,9 @@ export class CloudService {
 
 	public user: any = null;
   public menu: any;
+  public options: any = [];
+  public extras: any = [];
+  public sizes: any = [];
 
   constructor(
   	public http: Http,
@@ -31,6 +34,9 @@ export class CloudService {
     Parse.serverURL = 'http://162.243.118.87:1339/parse';
     this.user = Parse.User.current();
 	  configService.init();
+    this.getOptions();
+    this.getExtras();
+    this.getSizes();
     this.fetchMenu();
   }
 
@@ -63,6 +69,19 @@ export class CloudService {
           reject(error);
         }
       });
+    });
+  }
+
+  getOptions(){
+    var me = this;
+    var option = new Parse.Query("Option");
+    option.find({
+      success: function(results) {
+        me["options"] = results;
+      },
+      error: function(reuslts, error) {
+        console.log("Error : " + error.message);
+      }
     });
   }
 
@@ -227,22 +246,16 @@ export class CloudService {
     });
   }
 
-  addNewOption(option_name){
+  getExtras(){
     var me = this;
-    return new Promise((resolve, reject) => {
-      var Option = Parse.Object.extend("Option");
-      var option = new Option();
-      option.set("name", option_name);
-      option.save(null, {
-        success: function(option) {
-          me.menu.options.push(option);
-          resolve(option);
-        },
-        error: function(option, error) {
-          reject(error);
-        }
-      });
-
+    var extra = new Parse.Query("Extra");
+    extra.find({
+      success: function(results) {
+        me["extras"] = results;
+      },
+      error: function(reuslts, error) {
+        console.log("Error : " + error.message);
+      }
     });
   }
 
@@ -256,7 +269,7 @@ export class CloudService {
 
       extra.save(null, {
         success: function(extra) {
-          me.menu.extras.push(extra);
+          me.extras.push(extra);
           resolve(extra);
         },
         error: function(extra, error) {
@@ -264,6 +277,38 @@ export class CloudService {
         }
       });
 
+    });
+  }
+
+  addNewOption(option_name){
+    var me = this;
+    return new Promise((resolve, reject) => {
+      var Option = Parse.Object.extend("Option");
+      var option = new Option();
+      option.set("name", option_name);
+      option.save(null, {
+        success: function(option) {
+          me.options.push(option);
+          resolve(option);
+        },
+        error: function(option, error) {
+          reject(error);
+        }
+      });
+
+    });
+  }
+
+  getSizes(){
+    var me = this;
+    var size = new Parse.Query("Size");
+    size.find({
+      success: function(results) {
+        me["sizes"] = results;
+      },
+      error: function(reuslts, error) {
+        console.log("Error : " + error.message);
+      }
     });
   }
 
@@ -277,7 +322,7 @@ export class CloudService {
 
       size.save(null, {
         success: function(size) {
-          me.menu.sizes.push(size);
+          me.sizes.push(size);
           resolve(size);
         },
         error: function(size, error) {
@@ -325,14 +370,17 @@ export class CloudService {
         }
         item.save(null, {
           success: function(item) {
+            
             var category = item.get("category");
+            me.menu.map[category.id].items.array.push(item);
+            me.menu.map[category.id].items.map[item.id] = item;
             var relation = category.relation("items");
             relation.add(item);
             category.save(null, {
               success: function(category){
-                me.fetchMenu().then((menu)=>{
-                  resolve(menu);
-                });
+
+                me.menu.map[category.id].object = category;
+                resolve();
               },
               error: function(category,error){
                 reject(error);
