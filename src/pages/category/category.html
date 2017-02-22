@@ -11,7 +11,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>{{ category.object.get("name") }}</ion-title>
+    <ion-title>{{ category?.object?.get("name") }}</ion-title>
     
     <ion-buttons end>
       <button *ngIf="cloudService?.user?.get('type')=='admin'" ion-button>
@@ -30,7 +30,7 @@
 	      <ion-col *ngIf="category?.items?.array[i]" ><div>
 	        <div class="list-items">
 	          <div class="item-menu">
-	              <img (click)="viewItem(category?.items?.array[i])" src="{{configService.companyFiles}}/{{ cloudService?.menu?.allMenuItems[category?.items?.array[i]?.id]?.images?.array[0].get('file').name()}}"/>
+	              <img (click)="viewItem(category?.items?.array[i])" src="{{configService.companyFiles}}/{{ category?.items?.array[i]?.get('mainImage')?.get('file').name()}}"/>
 
 	              <div class="overlay">
 	                <span class="pull-left" color="light">
@@ -52,11 +52,11 @@
 	        <div class="list-items">
 	          <div class="item-menu">
 
-	              <img (click)="viewItem(category.items.array[i+1])" src="{{configService.companyFiles}}/{{ cloudService?.menu?.allMenuItems[category?.items?.array[i+1]?.id]?.images?.array[0].get('file').name()}}"/>
+	              <img (click)="viewItem(category.items.array[i+1])" src="{{configService.companyFiles}}/{{ category?.items?.array[i+1]?.get('mainImage')?.get('file').name()}}"/>
 
 	              <div class="overlay">
 	                <span class="pull-left" color="light">
-	                  {{ category?.items?.array[i]?.get('name') }} - ${{ category?.items?.array[i+1]?.get("price") }}
+	                  {{ category?.items?.array[i+1]?.get('name') }} - ${{ category?.items?.array[i+1]?.get("price") }}
 	                </span>
 	              </div>
 

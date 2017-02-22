@@ -365,6 +365,7 @@ export class CloudService {
       item.set("sizes", sizes);
       item.set("category", addItemModal.data.category.object);
       me.saveFiles(addItemModal.files).then((savedFiles)=>{
+        item.set("mainImage", savedFiles[0]);
         for(let i=0;i<savedFiles["length"];i++){
           relation.add(savedFiles[i]);
         }

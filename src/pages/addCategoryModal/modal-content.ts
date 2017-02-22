@@ -13,6 +13,7 @@ export class AddCategoryModal {
   public name: any;
   public files: any = [];
   public fileDetailObject: any;
+  public loader: any;
 
   constructor(
     public platform: Platform,
@@ -39,6 +40,7 @@ export class AddCategoryModal {
       me.presentLoading();
       me.cloudService.addMenuCategory(me.name,me.files).then((response) => {
         me.events.publish("event:toast", { message: "Saved!", position: "bottom", time:5000});
+        me.dismissLoading();
         me.dismiss();
       }).catch((error)=>{
         me.events.publish("event:toast", { message: error.message, position: "bottom", time:5000});
@@ -66,5 +68,17 @@ export class AddCategoryModal {
 
   dismiss() {
     this.viewCtrl.dismiss();
+  }
+
+  dismissLoading(){
+    if(this.loader){
+      this.loader.dismiss().then((response) => {
+        return response;
+      }).then((response) => {
+        console.info(response)
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
   }
 }

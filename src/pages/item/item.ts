@@ -36,8 +36,8 @@ export class ItemPage {
   ) {
 
   	// get sample data for item
-    let id = navParams.get('id');
-    console.log("showing item page for id : " + id);
+    let item = navParams.get('item');
+    console.log("showing item page for item: " + item);
 
     // this.item = itemService.getItem(id);
 
