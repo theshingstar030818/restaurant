@@ -30,7 +30,7 @@ Parse.Cloud.define("getMenu", function(request, response) {
 	});
 });
 
-getAllMenuItems(user){
+function getAllMenuItems(user){
   
     var menuItemMap={};
     var ajaxCallsRemaining;
