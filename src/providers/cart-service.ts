@@ -68,7 +68,7 @@ export class CartService {
 			var items = me.cart.get("items");
 			items.push(item);
 			me.cart.set("items", items);
-		    me.cart.set("total", me.cart.get("total") + (parseFloat(item.quantity.toFixed(2))*parseFloat(item.finalPrice.toFixed(2))));
+		    me.cart.set("total", me.cart.get("total") + (parseFloat(item.quantity)*parseFloat(item.finalPrice)));
 		    
 		    me.saveCart().then((cart)=>{
 		    	me.cart=cart;
@@ -83,7 +83,7 @@ export class CartService {
 		var me = this;
 		return new Promise((resolve, reject) => {
 			var items = me.cart.get("items");
-			var deduct = (parseFloat(items[index].finalPrice.toFixed(2))*(items[index].quantity.toFixed(2)));
+			var deduct = (parseFloat(items[index].finalPrice)*(items[index].quantity));
 		    me.cart.set("total",  (me.cart.get("total")-deduct));
 		    items.splice(index, 1);
 		    me.cart.set("items",items);
@@ -124,7 +124,7 @@ export class CartService {
 		return new Promise((resolve, reject) => {
 			var items = me.cart.get("items");
 			items[index].quantity++;
-			this.cart.set("total", parseFloat(this.cart.get("total").toFixed(2))+ parseFloat(items[index].finalPrice.toFixed(2)));
+			this.cart.set("total", parseFloat(this.cart.get("total"))+ parseFloat(items[index].finalPrice));
 			me.saveCart().then((cart)=>{
 				resolve(cart);
 			}).catch((error)=>{
@@ -139,7 +139,7 @@ export class CartService {
 		return new Promise((resolve, reject) => {
 			var items = me.cart.get("items");
 			items[index].quantity--;
-			this.cart.set("total", parseFloat(this.cart.get("total").toFixed(2))-parseFloat(items[index].finalPrice.toFixed(2)));
+			this.cart.set("total", parseFloat(this.cart.get("total"))-parseFloat(items[index].finalPrice));
 			if(items[index].quantity == 0){
 				me.removeItem(index).then((cart)=>{
 					resolve(cart);

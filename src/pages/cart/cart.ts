@@ -107,8 +107,6 @@ export class CartPage {
 
   // click buy button
   buy() {
-    if(this.cart.items.length>0){
-      this.nav.push(CheckoutPage);
-    }
+    this.nav.push(CheckoutPage);
   }
 }
