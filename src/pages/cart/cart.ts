@@ -1,7 +1,8 @@
 import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
+import {NavController, LoadingController} from 'ionic-angular';
 
 import {CartService} from '../../providers/cart-service';
+import {ConfigService} from '../../providers/config-service';
 import {CheckoutPage} from "../checkout/checkout";
 
 /*
@@ -17,10 +18,14 @@ import {CheckoutPage} from "../checkout/checkout";
 export class CartPage {
   // cart data
   public cart: any;
+  loader: any;
 
   constructor(
   	public nav: NavController,
-   	public cartService: CartService) {
+   	public cartService: CartService,
+    public configService: ConfigService,
+    public loadingCtrl: LoadingController,
+  ) {
     // set sample data
     let me = this;
    	cartService.getCart().then((cart)=>{
@@ -30,16 +35,40 @@ export class CartPage {
     });
   }
 
+  presentLoading() {
+    let loader = this.loadingCtrl.create({
+      content: "Please wait..."
+    });
+    this.loader = loader;
+    loader.present();
+  }
+
+  dismissLoading(){
+    if(this.loader){
+      this.loader.dismiss().then((response) => {
+        return response;
+      }).then((response) => {
+        console.info(response)
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+  }
+
   // plus quantity
   plusQty(index) {
     var me = this;
+    me.presentLoading();
     me.cartService.plusQty(index).then((cart)=>{
     	me.cartService.getCart().then((cart)=>{
+        me.dismissLoading();
 	    	me.cart = cart;
 	    }).catch((error)=>{
+        me.dismissLoading();
 	    	console.error(error);
 	    });
     }).catch((error)=>{
+      me.dismissLoading();
     	console.error(error);
     });
     
@@ -48,13 +77,17 @@ export class CartPage {
   // minus quantity
   minusQty(index) {
   	var me = this;
+    me.presentLoading();
     me.cartService.minusQty(index).then((cart)=>{
     	me.cartService.getCart().then((cart)=>{
+        me.dismissLoading();
 	    	me.cart = cart;
 	    }).catch((error)=>{
+        me.dismissLoading();
 	    	console.error(error);
 	    });
     }).catch((error)=>{
+      me.dismissLoading();
     	console.error(error);
     });
   }
@@ -62,9 +95,12 @@ export class CartPage {
   // remove item from cart
   remove(index) {
     var me = this;
+    me.presentLoading();
     this.cartService.removeItem(index).then((cart)=>{
+      me.dismissLoading();
     	me.cart = cart;
     }).catch((error)=>{
+      me.dismissLoading();
     	console.error(error);
     });
   }

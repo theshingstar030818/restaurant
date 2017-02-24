@@ -68,7 +68,7 @@ export class CartService {
 			var items = me.cart.get("items");
 			items.push(item);
 			me.cart.set("items", items);
-		    me.cart.set("total", me.cart.get("total") + (item.quantity*item.finalPrice));
+		    me.cart.set("total", me.cart.get("total") + (parseFloat(item.quantity.toFixed(2))*parseFloat(item.finalPrice.toFixed(2))));
 		    
 		    me.saveCart().then((cart)=>{
 		    	me.cart=cart;
@@ -83,12 +83,13 @@ export class CartService {
 		var me = this;
 		return new Promise((resolve, reject) => {
 			var items = me.cart.get("items");
-			var deduct = (items[index].finalPrice*items[index].qty);
+			var deduct = (parseFloat(items[index].finalPrice.toFixed(2))*(items[index].quantity.toFixed(2)));
 		    me.cart.set("total",  (me.cart.get("total")-deduct));
 		    items.splice(index, 1);
 		    me.cart.set("items",items);
 		    me.saveCart().then((cart)=>{
 		    	me.cart=cart;
+		    	resolve(me.cart);
 		    }).catch((error)=>{
 		    	reject(error);
 		    });
@@ -122,8 +123,8 @@ export class CartService {
 		var me = this;
 		return new Promise((resolve, reject) => {
 			var items = me.cart.get("items");
-			items[index].qty++;
-			this.cart.set("total", this.cart.get("total")+items[index].finalPrice);
+			items[index].quantity++;
+			this.cart.set("total", parseFloat(this.cart.get("total").toFixed(2))+ parseFloat(items[index].finalPrice.toFixed(2)));
 			me.saveCart().then((cart)=>{
 				resolve(cart);
 			}).catch((error)=>{
@@ -137,13 +138,21 @@ export class CartService {
 		var me = this;
 		return new Promise((resolve, reject) => {
 			var items = me.cart.get("items");
-			items[index].qty--;
-			this.cart.set("total", this.cart.get("total")-items[index].finalPrice);
-			me.saveCart().then((cart)=>{
-				resolve(cart);
-			}).catch((error)=>{
-				reject(error);
-			});
+			items[index].quantity--;
+			this.cart.set("total", parseFloat(this.cart.get("total").toFixed(2))-parseFloat(items[index].finalPrice.toFixed(2)));
+			if(items[index].quantity == 0){
+				me.removeItem(index).then((cart)=>{
+					resolve(cart);
+				}).catch((error)=>{
+					reject(error);
+				});
+			}else{
+				me.saveCart().then((cart)=>{
+					resolve(cart);
+				}).catch((error)=>{
+					reject(error);
+				});
+			}
 		});
 		
 	}

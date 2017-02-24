@@ -184,7 +184,7 @@
       order.lessThan("createdAt", getDayEndDateObj(new Date(ordersDate)));
       order.find({
         success: function(results) {
-          console.log(results.legth + "orders fetched");
+          console.log(results.length + " orders fetched");
           me["user"].orders = [];
           me["user"].ordersMap = {};
           me["ordersDetails"].declinedOrders = {array:[],total:0};
@@ -262,7 +262,7 @@
       order.include("order");
       order.find({
         success: function(results) {
-          console.log("orders fetched : " + results);
+          console.log("orders fetched : " + results.length);
           me["user"].orders = [];
           me["user"].ordersMap = {};
           
