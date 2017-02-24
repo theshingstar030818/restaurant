@@ -187,12 +187,12 @@
           // console.log(results.length + " orders fetched");
           me["user"].orders = [];
           me["user"].ordersMap = {};
-          me["ordersDetails"].declinedOrders = {array:[],total:0};
-          me["ordersDetails"].cancelledByClientOrders = {array:[],total:0};
-          me["ordersDetails"].pendingApprovalOrders = {array:[],total:0};
-          me["ordersDetails"].inKitchenOrders = {array:[],total:0};
-          me["ordersDetails"].outForDeliveryOrders = {array:[],total:0};
-          me["ordersDetails"].completedOrders = {array:[],total:0};
+          me["ordersDetails"]["declinedOrders"] = {array:[],total:0};
+          me["ordersDetails"]["cancelledByClientOrders"] = {array:[],total:0};
+          me["ordersDetails"]["pendingApprovalOrders"] = {array:[],total:0};
+          me["ordersDetails"]["inKitchenOrders"] = {array:[],total:0};
+          me["ordersDetails"]["outForDeliveryOrders"] = {array:[],total:0};
+          me["ordersDetails"]["completedOrders"] = {array:[],total:0};
           for(var i=0; i<results.length; i++){
             var jsonObj = JSON.parse(JSON.stringify(results[i]));
             var status = results[i].get("status");

@@ -579,8 +579,8 @@ export class CloudService {
         me.ordersDetails.inKitchenOrders = orders.ordersDetails.inKitchenOrders;
         me.ordersDetails.outForDeliveryOrders = orders.ordersDetails.outForDeliveryOrders;
         me.ordersDetails.completedOrders = orders.ordersDetails.completedOrders;
-        me.user.orders = orders.user.orders;
-        me.user.ordersMap = orders.user.ordersMap;
+        me.orders = orders.user.orders;
+        me.ordersMap = orders.user.ordersMap;
 
         me.events.publish('fetchAllOrders:event', orders);
         resolve(orders);
@@ -631,8 +631,8 @@ export class CloudService {
     let me = this;
     return new Promise((resolve, reject) => {
       Parse.Cloud.run('fetchOrders').then(function(orders) {
-        me.user.orders = orders.array;
-        me.user.ordersMap = orders.map;
+        me.orders = orders.array;
+        me.ordersMap = orders.map;
         me.events.publish('fetchOrders:event', orders);
         resolve(orders);
       });
@@ -651,10 +651,10 @@ export class CloudService {
       contact.save(null, {
         success: function(item) {
            if(!me.isAdmin()){
-             me.user.contacts.push(JSON.parse(JSON.stringify(item)));
+             me.contacts.push(JSON.parse(JSON.stringify(item)));
              var User_Contact = Parse.Object.extend("User_Contact_");
               var user_contact = new User_Contact();
-              user_contact.set("user",me.user.parseUserObject);
+              user_contact.set("user",Parse.User.current());
               user_contact.set("contact", item);
               user_contact.save(null, {
                 success: function(j_obj){
@@ -669,7 +669,7 @@ export class CloudService {
            }else{
              me.contacts.push(item);
              me.contactsMap[item.id] = item;
-             me.user.contacts = [JSON.parse(JSON.stringify(item))];
+             me.contacts = [JSON.parse(JSON.stringify(item))];
              resolve();
            }
         },
@@ -701,10 +701,10 @@ export class CloudService {
          
          console.log("address created now need to save it intojunction table");
            if(!me.isAdmin()){
-              me.user.addresses.push(JSON.parse(JSON.stringify(item)));
+              me.addresses.push(JSON.parse(JSON.stringify(item)));
               var User_Address = Parse.Object.extend("User_Address_");
               var user_address = new User_Address();
-              user_address.set("user",me.user.parseUserObject);
+              user_address.set("user",Parse.User.current());
               user_address.set("address", item);
               user_address.save(null, {
                 success: function(j_obj){
@@ -718,8 +718,8 @@ export class CloudService {
               });
            }else{
              //for admins adding the address do not link it to any user
-             me.user.addresses = [];
-             me.user.addresses.push(JSON.parse(JSON.stringify(item)));
+             me.addresses = [];
+             me.addresses.push(JSON.parse(JSON.stringify(item)));
              me.addressesMap[item.id]=item;
              me.addresses.push(item);
              resolve();
@@ -745,18 +745,16 @@ export class CloudService {
       me.currentAddressIndex = ord.address;
       var Address = Parse.Object.extend("Address");
       var address = new Address();
-      address.id = me.user.addresses[ord.address].objectId;
+      address.id = me.addresses[ord.address].objectId;
       order.set("address", address);
     }
     
     me.currentContactIndex = ord.contact;
-    var Contact = Parse.Object.extend("Contact");
-    var contact = new Contact();
-    contact.id = me.user.contacts[ord.contact].objectId;
+    var contact = me.contacts[ord.contact];
     order.set("contact", contact);
     order.set("items",me.cartService.cart.get("items"));
     order.set("status","Pending Approval");
-
+    order.set("user",Parse.User.current());
     var transaction = {
       paymentOption: ord.paymentOption,
       paymentType: ord.paymentType,
@@ -802,7 +800,7 @@ export class CloudService {
           if(!me.isAdmin()){
             var User_Order_ = Parse.Object.extend("User_Order_");
             var user_order = new User_Order_();
-            user_order.set("user",me.user.parseUserObject);
+            user_order.set("user",Parse.User.current());
             user_order.set("order", item);
             user_order.save(null, {
               success: function(j_obj){
@@ -816,8 +814,8 @@ export class CloudService {
             });
           }else{
             var jsonObj = JSON.parse(JSON.stringify(item));
-            jsonObj.address = me.user.addresses[0];
-            jsonObj.contact = me.user.contacts[0];
+            jsonObj.address = me.addresses[0];
+            jsonObj.contact = me.contacts[0];
             console.log("added order to pendingApprovalOrders array : " + jsonObj);
             me.ordersDetails.pendingApprovalOrders.array.push(jsonObj);
             me.ordersDetails.pendingApprovalOrders.total += item.get("transaction").total;

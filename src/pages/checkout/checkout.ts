@@ -290,10 +290,10 @@ export class CheckoutPage {
       // console.log("please select address");
       this.presentAlert("Error","Please select an address or add one.",null);
     }else{
-      this.presentAlert("Order Placed","Chef\'s notified",function(){
+      this.presentAlert("Place Order ?","",function(){
         var orderObject = {
           address: me.addressSelected,
-          contact: me.contactSelected,
+          contact: parseInt(me.contactSelected),
           paymentType: me.paymentTypeSelected,
           paymentOption: me.paymentOptionSelected,
           specialOrderInstructions: me.specialOrderInstructions

@@ -21,6 +21,7 @@ import { CheckoutPage } from '../pages/checkout/checkout';
 import { OrdersPage } from '../pages/orders/orders';
 import { EmployeePage } from '../pages/employee/employee';
 import { AboutPage } from '../pages/about/about';
+import { AddAddressModal } from '../pages/addAddressModal/modal-content';
 
 
 
@@ -45,7 +46,8 @@ import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
     CheckoutPage,
     OrdersPage,
     EmployeePage,
-    AboutPage
+    AboutPage,
+    AddAddressModal
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -68,7 +70,8 @@ import { AddCategoryModal } from '../pages/addCategoryModal/modal-content';
     CheckoutPage,
     OrdersPage,
     EmployeePage,
-    AboutPage
+    AboutPage,
+    AddAddressModal
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},

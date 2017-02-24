@@ -43,7 +43,16 @@ export class CartService {
 	};
 
   	cleanCart(){
-
+  		var me = this;
+  		return new Promise((resolve, reject) => {
+	  		me.cart.set("total",0);
+	  		me.cart.set("items",[]);
+	  		me.saveCart().then((cart)=>{
+	  			resolve(me.cart);
+	  		}).catch((error)=>{
+	  			reject(error);
+	  		});
+	  	});
   	}
 
 	saveCart(){

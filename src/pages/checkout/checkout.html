@@ -23,7 +23,7 @@
 
 <ion-content class=" gray-bg has-footer">
 
-  <div *ngIf="!cloudService.isAdmin()">
+  <div *ngIf="cloudService.isAdmin()">
     <!-- SEARCH BAR FOR ADDRESS AND CONTACT LOOKUP-->
     <ion-searchbar
       [(ngModel)]="search.ngModel"
@@ -118,18 +118,18 @@
     <ion-icon name="md-create" class="pull-right" (click)="addContact()"></ion-icon>
   </div>
 
-  <ion-list class="list-full-border card" margin padding radio-group [ngModel]="contactSelected" (ngModelChange)="onContactSelect($event)" *ngIf="user?.contacts?.length">
-    <ion-item *ngFor="let contact of user?.contacts let i = index">
+  <ion-list class="list-full-border card" margin padding radio-group [ngModel]="contactSelected" (ngModelChange)="onContactSelect($event)" *ngIf="cloudService?.contacts?.length">
+    <ion-item *ngFor="let contact of cloudService?.contacts let i = index">
       <ion-icon name="md-home" item-left></ion-icon>
       <ion-label>
-        {{contact?.phone}}
-        <p class="text-hint">{{contact?.email}}</p>
+        {{contact?.get('phone')}}
+        <p class="text-hint">{{contact?.get('email')}}</p>
       </ion-label>
       <ion-radio value="{{i}}"></ion-radio>
     </ion-item>
   </ion-list>
 
-  <div [hidden]="takoutOrDeliverySelected=='0'">
+  <div [hidden]="!takoutOrDeliverySelected=='0'">
     <!--shipping address-->
     <div margin >
       <span>Shipping address</span>
@@ -137,13 +137,13 @@
       <ion-icon name="md-create" class="pull-right" (click)="addAddress()"></ion-icon>
     </div>
 
-    <ion-list class="list-full-border card" margin padding radio-group [ngModel]="addressSelected" (ngModelChange)="onAddressSelect($event)" *ngIf="user?.addresses?.length">
-      <ion-item *ngFor="let address of user?.addresses let i = index">
+    <ion-list class="list-full-border card" margin padding radio-group [ngModel]="addressSelected" (ngModelChange)="onAddressSelect($event)" *ngIf="cloudService?.addresses?.length">
+      <ion-item *ngFor="let address of cloudService?.addresses let i = index">
         <ion-icon name="md-home" item-left></ion-icon>
         <ion-label>
-          {{address?.unitNumber}}, {{address?.buildingNumber}} {{address?.streetName}}
-          <p class="text-hint">{{address?.city}}, {{address?.state}}</p>
-          <p class="text-hint">{{address?.postalCode}}, {{address?.country}}</p>
+          {{address?.get('unitNumber')}}, {{address?.get('buildingNumber')}} {{address?.get('streetName')}}
+          <p class="text-hint">{{address?.get('city')}}, {{address?.get('state')}}</p>
+          <p class="text-hint">{{address?.get('postalCode')}}, {{address?.get('country')}}</p>
         </ion-label>
         <ion-radio value="{{i}}"></ion-radio>
       </ion-item>
