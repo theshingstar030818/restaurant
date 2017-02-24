@@ -29,6 +29,8 @@ export class CloudService {
   private currentContactIndex: any;
   private currentAddressIndex: any;
 
+  private orders: any;
+  private ordersMap: any;
   private ordersDate: any;
   private ordersDetails: any;
   private employees: any;  
@@ -45,11 +47,20 @@ export class CloudService {
   ) {
 
     var now = new Date();
+
     this.ordersDate = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toJSON();
     this.ordersDetails = {};
+
     this.employees = [];
+
+    this.contacts = [];
     this.contactsMap = {};
+
+    this.addresses = [];
     this.addressesMap = {};
+
+    this.orders = [];
+    this.ordersMap = {};
 
     Parse.initialize('restaurant_app_id');
     Parse.serverURL = 'http://162.243.118.87:1339/parse';
@@ -627,6 +638,243 @@ export class CloudService {
       });
     });
   } 
+
+  addContact(cont){
+    var me =this;
+    var Contact = Parse.Object.extend("Contact");
+    var contact = new Contact();
+    contact.set("email", cont.email);
+    contact.set("phone", cont.phone);
+    contact.set("isDeleted", false);
+    contact.set("user",Parse.User.current());
+    return new Promise((resolve, reject) => {
+      contact.save(null, {
+        success: function(item) {
+           if(!me.isAdmin()){
+             me.user.contacts.push(JSON.parse(JSON.stringify(item)));
+             var User_Contact = Parse.Object.extend("User_Contact_");
+              var user_contact = new User_Contact();
+              user_contact.set("user",me.user.parseUserObject);
+              user_contact.set("contact", item);
+              user_contact.save(null, {
+                success: function(j_obj){
+                  console.log("junction object stored : " + j_obj);
+                  resolve();
+                },
+                error: function(j_obj, error) {
+                  console.log(error.message);
+                  reject(error);
+                }
+              });
+           }else{
+             me.contacts.push(item);
+             me.contactsMap[item.id] = item;
+             me.user.contacts = [JSON.parse(JSON.stringify(item))];
+             resolve();
+           }
+        },
+        error: function(item, error) {
+          console.log(error.message);
+          reject(error);
+        }
+      });
+    });
+  }
+
+  addAddress(add){
+
+    var me =this;
+    var Address = Parse.Object.extend("Address");
+    var address = new Address();
+    address.set("unitNumber", add.unitNumber);
+    address.set("buildingNumber", add.buildingNumber);
+    address.set("streetName", add.streetName);
+    address.set("city", add.city);
+    address.set("state", add.state);
+    address.set("country", add.country);
+    address.set("isDeleted", false);
+    address.set("postalCode", add.postalCode);
+    address.set("user",Parse.User.current());
+    return new Promise((resolve, reject) => {
+      address.save(null, {
+        success: function(item) {
+         
+         console.log("address created now need to save it intojunction table");
+           if(!me.isAdmin()){
+              me.user.addresses.push(JSON.parse(JSON.stringify(item)));
+              var User_Address = Parse.Object.extend("User_Address_");
+              var user_address = new User_Address();
+              user_address.set("user",me.user.parseUserObject);
+              user_address.set("address", item);
+              user_address.save(null, {
+                success: function(j_obj){
+                  console.log("junction object stored : " + j_obj);
+                  resolve();
+                },
+                error: function(j_obj, error) {
+                  console.log(error.message);
+                  reject(error);
+                }
+              });
+           }else{
+             //for admins adding the address do not link it to any user
+             me.user.addresses = [];
+             me.user.addresses.push(JSON.parse(JSON.stringify(item)));
+             me.addressesMap[item.id]=item;
+             me.addresses.push(item);
+             resolve();
+           }
+        },
+        error: function(item, error) {
+          console.log(error.message);
+          reject(error);
+        }
+      });
+    });
+  }
+
+  addOrder(ord){
+    var me =this;
+    var Order = Parse.Object.extend("Orders");
+    var order = new Order();
+
+    if(ord.address == "TAKEOUT"){
+      order.set("type","takeout");
+    }else{
+      order.set("type","delivery");
+      me.currentAddressIndex = ord.address;
+      var Address = Parse.Object.extend("Address");
+      var address = new Address();
+      address.id = me.user.addresses[ord.address].objectId;
+      order.set("address", address);
+    }
+    
+    me.currentContactIndex = ord.contact;
+    var Contact = Parse.Object.extend("Contact");
+    var contact = new Contact();
+    contact.id = me.user.contacts[ord.contact].objectId;
+    order.set("contact", contact);
+    order.set("items",me.cartService.cart.get("items"));
+    order.set("status","Pending Approval");
+
+    var transaction = {
+      paymentOption: ord.paymentOption,
+      paymentType: ord.paymentType,
+      total: me.cartService.cart.get("total")
+    };
+
+    order.set("specialInstructions",ord.specialOrderInstructions);
+    order.set("transaction",transaction);
+
+    var now = new Date();
+    order.set("createdAtLocal",now);
+
+    return new Promise((resolve, reject) => {
+      order.save(null, {
+        success: function(item) {
+          
+          var itemToStore = JSON.parse(JSON.stringify(item));
+          me.orders.push(itemToStore);
+          me.orders.sort(me.sortOrdersByTimeEarliestFirst);
+          me.ordersMap[item.id] = itemToStore;
+
+          if(!(item.get("type")=="takeout")){
+            var addressOrderRelation = address.relation("orders");
+            addressOrderRelation.add(item);
+            address.save();
+            
+            var addressContactRelation = address.relation("contacts");
+            addressContactRelation.add(contact);
+            address.save();
+          
+            var contactAddressRelation = contact.relation("addresses");
+            contactAddressRelation.add(address);
+            contact.save();
+          }
+
+          var contactOrderRelation = contact.relation("orders");
+          contactOrderRelation.add(item);
+          contact.save();
+
+          //clean cart 
+          me.cartService.cleanCart();
+          me.sendEmail();
+          if(!me.isAdmin()){
+            var User_Order_ = Parse.Object.extend("User_Order_");
+            var user_order = new User_Order_();
+            user_order.set("user",me.user.parseUserObject);
+            user_order.set("order", item);
+            user_order.save(null, {
+              success: function(j_obj){
+                console.log("junction object stored : " + j_obj);
+                resolve();
+              },
+              error: function(j_obj, error) {
+                console.log(error.message);
+                reject(error);
+              }
+            });
+          }else{
+            var jsonObj = JSON.parse(JSON.stringify(item));
+            jsonObj.address = me.user.addresses[0];
+            jsonObj.contact = me.user.contacts[0];
+            console.log("added order to pendingApprovalOrders array : " + jsonObj);
+            me.ordersDetails.pendingApprovalOrders.array.push(jsonObj);
+            me.ordersDetails.pendingApprovalOrders.total += item.get("transaction").total;
+            resolve();
+          }
+        },
+        error: function(item, error) {
+          console.log(error.message);
+          reject(error);
+        }
+      });
+    });
+  }
+
+  sortOrdersByTimeOldestFirst(a, b) {
+    var aTime = new Date(a.createdAt).getTime();
+    var bTime = new Date(b.createdAt).getTime();
+    return aTime - bTime;
+  }
+
+  sortOrdersByTimeEarliestFirst(a, b) {
+    var aTime = new Date(a.createdAt).getTime();
+    var bTime = new Date(b.createdAt).getTime();
+    return bTime - aTime;
+  }
+
+  sendEmail(){
+    var requestObj = {};
+    Parse.Cloud.run('sendEmail', requestObj, {
+      success: function(result) {
+        console.log(JSON.stringify(result));
+      },
+      error: function(error) {
+        console.log(JSON.stringify(error));
+      }
+    });
+  }
+
+  setUserAddresses(address){
+    this.user.addresses = JSON.parse(JSON.stringify(address));
+    return this.user;
+  }
+
+  setUserAddress(address){
+    this.user.addresses = JSON.parse(JSON.stringify([address]));
+    return this.user;
+  }
+
+  setUserContact(contact){
+    this.user.contacts = JSON.parse(JSON.stringify([contact]));
+    return this.user;
+  }
+
+  setUserContacts(contacts){
+    this.user.contacts = JSON.parse(JSON.stringify(contacts));
+    return this.user;
+  }
 }
 
 

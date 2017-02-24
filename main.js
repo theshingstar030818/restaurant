@@ -292,9 +292,8 @@
   function fetchContacts(parseUser){
     return new Promise((resolve, reject) => {    
       var me = {};
-      var contact = new Parse.Query("User_Contact_");
+      var contact = new Parse.Query("Contact");
       contact.equalTo("user",parseUser);
-      contact.include("contact");
       contact.find({
         success: function(results) {
           // console.log("contacts fetched : " + results);

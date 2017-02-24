@@ -14,7 +14,7 @@ import Parse from 'parse';
 @Injectable()
 export class CartService {
 
-	private cart: any = null;
+	public cart: any = null;
 
 	constructor(
 		public http: Http,

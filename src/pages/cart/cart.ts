@@ -107,6 +107,6 @@ export class CartPage {
 
   // click buy button
   buy() {
-    this.nav.push(CheckoutPage);
+    this.nav.push(CheckoutPage, {cart: this.cart});
   }
 }
